@@ -1,4 +1,4 @@
-const SIMILAR_OBJECT_COUNT = 3;
+const SIMILAR_OBJECT_COUNT = 25;
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -19,7 +19,7 @@ const NAMES = [
   'Владислав',
   'Агата'
 ];
-const DESCRIPTION = [
+const DESCRIPTIONS = [
   'Описание_1',
   'Описание_2',
   'Описание_3',
@@ -43,7 +43,7 @@ function getRandomPositiveInteger (a, b) {
   return Math.floor(result);
 }
 
-function getRandomPositiveIntegerWithoutRepeating (a, b, arr) {
+function getUniqueRandomPositiveInt (a, b, arr) {
   let result = getRandomPositiveInteger (a, b);
   while (arr.includes(result)) {
     result = getRandomPositiveInteger (a, b);
@@ -53,12 +53,12 @@ function getRandomPositiveIntegerWithoutRepeating (a, b, arr) {
 }
 
 function getRandomArrayElement(array) {
-  return array[getRandomPositiveInteger (0, MESSAGES.length - 1)];
+  return array[getRandomPositiveInteger (0, array.length - 1)];
 }
 
 function createComment() {
   return {
-    id: getRandomPositiveIntegerWithoutRepeating (0, 200, arrIdComments),  //идентификаторы не должны повторятся
+    id: getUniqueRandomPositiveInt (0, 200, arrIdComments),
     avatar: `img/avatar-${getRandomPositiveInteger (1, 6)}.svg`,
     message: getRandomArrayElement(MESSAGES),
     name: getRandomArrayElement(NAMES)
@@ -76,9 +76,9 @@ function getComments(val) {
 
 function createObject() {
   return {
-    id: getRandomPositiveIntegerWithoutRepeating(1, 25, arrIdObjects),
-    url: `photos/${getRandomPositiveIntegerWithoutRepeating(1, 25, arrIdUrls)}.jpg`,
-    description: getRandomArrayElement(DESCRIPTION),
+    id: getUniqueRandomPositiveInt(1, 25, arrIdObjects),
+    url: `photos/${getUniqueRandomPositiveInt(1, 25, arrIdUrls)}.jpg`,
+    description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomPositiveInteger (15, 200),
     comments: [getComments(10)]
   };

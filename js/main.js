@@ -1,29 +1,87 @@
-function getRandomIntValue(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  if (min >= 0 && max >= 0) {
-    if (min < max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    return Math.floor(Math.random() * (min - max + 1)) + max;
-  }
-  return 'Ошибочно задан диапазон значений';
-}
-getRandomIntValue(30, 39);
-getRandomIntValue(50, 39);
-getRandomIntValue(0, 0);
-getRandomIntValue(20, -10);
-getRandomIntValue(-20, 10);
-getRandomIntValue(-20, -10);
-getRandomIntValue(-10, -20);
-getRandomIntValue(200.78, 10.23);
-getRandomIntValue(10.23, 200.78);
+const SIMILAR_OBJECT_COUNT = 25;
+const MESSAGES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+];
+const NAMES = [
+  'Алексей',
+  'Ясмина',
+  'Максим',
+  'Фёдор',
+  'Эвелина',
+  'Вероника',
+  'Сергей',
+  'Мирон',
+  'Владислав',
+  'Агата'
+];
+const DESCRIPTIONS = [
+  'Описание_1',
+  'Описание_2',
+  'Описание_3',
+  'Описание_4',
+  'Описание_5',
+  'Описание_6',
+  'Описание_7',
+  'Описание_8',
+  'Описание_9',
+  'Описание_10'
+];
 
-function checkLenghtValue(str, maxLength) {
-  if (str.length <= maxLength) {
-    return true;
-  }
-  return false;
-}
-checkLenghtValue('Hello world!', 15);
+const arrIdComments = [];
+const arrIdObjects = [];
+const arrIdUrls = [];
 
+function getRandomPositiveInteger (a, b) {
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+}
+
+function getUniqueRandomPositiveInt (a, b, arr) {
+  let result = getRandomPositiveInteger (a, b);
+  while (arr.includes(result)) {
+    result = getRandomPositiveInteger (a, b);
+  }
+  arr.push(result);
+  return result;
+}
+
+function getRandomArrayElement(array) {
+  return array[getRandomPositiveInteger (0, array.length - 1)];
+}
+
+function createComment() {
+  return {
+    id: getUniqueRandomPositiveInt (0, 200, arrIdComments),
+    avatar: `img/avatar-${getRandomPositiveInteger (1, 6)}.svg`,
+    message: getRandomArrayElement(MESSAGES),
+    name: getRandomArrayElement(NAMES)
+  };
+}
+
+function getComments(val) {
+  const arrComments= [];
+  const commentsCount = getRandomPositiveInteger(1, val);
+  for (let i = 0; i < commentsCount; i++) {
+    arrComments.push(createComment());
+  }
+  return arrComments;
+}
+
+function createObject() {
+  return {
+    id: getUniqueRandomPositiveInt(1, 25, arrIdObjects),
+    url: `photos/${getUniqueRandomPositiveInt(1, 25, arrIdUrls)}.jpg`,
+    description: getRandomArrayElement(DESCRIPTIONS),
+    likes: getRandomPositiveInteger (15, 200),
+    comments: [getComments(10)]
+  };
+}
+
+Array.from({length: SIMILAR_OBJECT_COUNT}, createObject);

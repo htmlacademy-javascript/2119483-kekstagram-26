@@ -1,6 +1,6 @@
 import {getRandomArrayElement, getRandomPositiveInteger} from './utils.js';
 
-const SIMILAR_OBJECT_COUNT = 25;
+const SIMILAR_OBJECT_COUNT = 12;
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',

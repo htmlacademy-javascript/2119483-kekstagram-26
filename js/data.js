@@ -1,6 +1,6 @@
 import {getRandomArrayElement, getRandomPositiveInteger} from './utils.js';
 
-const SIMILAR_OBJECT_COUNT = 12;
+const SIMILAR_OBJECT_COUNT = 25;
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -71,7 +71,7 @@ function createObject() {
     url: `photos/${getUniqueRandomPositiveInt(1, 25, arrIdUrls)}.jpg`,
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomPositiveInteger (15, 200),
-    comments: [getComments(10)]
+    comments: getComments(5)
   };
 }
 

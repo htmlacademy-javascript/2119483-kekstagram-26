@@ -71,7 +71,7 @@ function createObject() {
     url: `photos/${getUniqueRandomPositiveInt(1, 25, arrIdUrls)}.jpg`,
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomPositiveInteger (15, 200),
-    comments: [getComments(10)]
+    comments: getComments(5)
   };
 }
 

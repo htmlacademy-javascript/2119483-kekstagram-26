@@ -1,5 +1,5 @@
 
-function fullSizeDisplay(event, elem) {
+function fullSizeDisplay(elem) {
   const bigPicture = document.querySelector('.big-picture');
   const bigPictureImg = bigPicture.querySelector('.big-picture__img');
   const likesCount = bigPicture.querySelector('.likes-count');
@@ -20,8 +20,13 @@ function fullSizeDisplay(event, elem) {
   const socialComments = bigPicture.querySelector('.social__comments');
   const socialCommentTemplate = document.querySelector('#socialComment');
   const socialItem = socialCommentTemplate.content.querySelector('li');
+  const oldComments = socialComments.querySelectorAll('li');
 
-  for (let i = 0; i <= elem.comments.length - 1; i++) {
+  for (const comment of oldComments) {
+    socialComments.removeChild(comment);
+  }
+
+  for (let i = 0; i < elem.comments.length; i++) {
     const commentElem = socialItem.cloneNode(true);
     const socialPic = commentElem.querySelector('.social__picture');
     socialPic.src = elem.comments[i].avatar;
@@ -44,5 +49,4 @@ function fullSizeDisplay(event, elem) {
 }
 
 export {fullSizeDisplay};
-
 

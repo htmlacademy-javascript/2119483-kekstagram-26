@@ -20,9 +20,6 @@ function upLoadCancelHandler() {
   upLoadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
-  imgUploadForm.removeEventListener('submit', validFormHandler);
-  document.removeEventListener('keydown', keyDownHandler);
-  upLoadFile.removeEventListener('change', upLoadFileHandler);
 }
 
 function keyDownHandler(evt) {
@@ -51,13 +48,13 @@ pristine.addValidator(
   'не пустая строка'
 );
 
-function validateDiscription (value) {
+function validateDescription (value) {
   return value.length <= 140;
 }
 
 pristine.addValidator(
   textDescription,
-  validateDiscription,
+  validateDescription,
   'До 140 символов'
 );
 

@@ -1,4 +1,6 @@
 
+import {isEscapeKey} from './utils.js';
+
 const bigPicture = document.querySelector('.big-picture');
 const modalOpen = document.querySelector('body');
 modalOpen.classList.add('modal-open');
@@ -42,7 +44,7 @@ closeButton.addEventListener('click', () => {
 });
 
 window.addEventListener('keydown', (evt) => {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     modalOpen.classList.remove('modal-open');
     bigPicture.classList.add('hidden');
   }});

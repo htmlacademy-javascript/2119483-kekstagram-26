@@ -39,7 +39,20 @@ const pristine = new Pristine(imgUploadForm, {
 });
 
 function validateHashTags (value) {
-  return value !== '';
+  const regexp = /#[A-Za-zА-Яа-я]{1,19}/;
+  const hashTags = value.toUpperCase().split(' ');
+  function checkHashTag(elem) {
+    return regexp.test(elem);
+  }
+  function checkRepeatHashTags(v,i,a) {
+    return a.lastIndexOf(v)!==i;
+  }
+  const isMatchRegExp = hashTags.every(checkHashTag);
+  const isGetRepeatHashTag = hashTags.some(checkRepeatHashTags);
+  if (isMatchRegExp && !isGetRepeatHashTag && hashTags.length <= 5){
+    return true;
+  }
+  return false;
 }
 
 pristine.addValidator(

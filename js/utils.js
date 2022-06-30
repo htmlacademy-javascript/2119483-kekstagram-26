@@ -9,4 +9,8 @@ function getRandomArrayElement(array) {
   return array[getRandomPositiveInteger (0, array.length - 1)];
 }
 
-export {getRandomArrayElement, getRandomPositiveInteger};
+function isEscapeKey(evt) {
+  return evt.key === 'Escape';
+}
+
+export {getRandomArrayElement, getRandomPositiveInteger, isEscapeKey};

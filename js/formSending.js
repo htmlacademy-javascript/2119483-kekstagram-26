@@ -25,7 +25,11 @@ function upLoadCancelHandler() {
 function keyDownHandler(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    upLoadCancelHandler();
+    if (document.activeElement === textHashtags || document.activeElement === textDescription) {
+      evt.stopPropagation();
+    } else {
+      upLoadCancelHandler();
+    }
   }
 }
 
@@ -77,6 +81,10 @@ function validFormHandler(evt) {
   }
 }
 
+/*console.log(document.activeElement);*/
+
 imgUploadForm.addEventListener('submit', validFormHandler);
 document.addEventListener('keydown', keyDownHandler);
 upLoadFile.addEventListener('change', upLoadFileHandler);
+
+

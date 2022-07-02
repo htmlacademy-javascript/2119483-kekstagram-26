@@ -11,6 +11,7 @@ const textDescription = imgUpload.querySelector('.text__description');
 function upLoadFileHandler () {
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  document.addEventListener('keydown', keyDownHandler);
   upLoadCancel.addEventListener('click', upLoadCancelHandler);
 }
 
@@ -20,6 +21,7 @@ function upLoadCancelHandler() {
   upLoadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
+  document.removeEventListener('keydown', keyDownHandler);
 }
 
 function keyDownHandler(evt) {
@@ -81,10 +83,6 @@ function validFormHandler(evt) {
   }
 }
 
-/*console.log(document.activeElement);*/
-
-imgUploadForm.addEventListener('submit', validFormHandler);
-document.addEventListener('keydown', keyDownHandler);
 upLoadFile.addEventListener('change', upLoadFileHandler);
-
+imgUploadForm.addEventListener('submit', validFormHandler);
 

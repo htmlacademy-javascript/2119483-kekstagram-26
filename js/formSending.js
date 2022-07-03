@@ -36,12 +36,12 @@ function keyDownHandler(evt) {
 }
 
 const pristine = new Pristine(imgUploadForm, {
-  classTo: 'img-upload__form',
-  errorClass: 'img-upload__form--invalid',
-  successClass: 'img-upload__form--valid',
-  errorTextParent: 'img-upload__form',
-  errorTextTag: 'span',
-  errorTextClass: 'form_error'
+  classTo: 'form-group',
+  errorClass: 'has-danger',
+  successClass: 'has-success',
+  errorTextParent: 'form-group',
+  errorTextTag: 'div',
+  errorTextClass: 'text-help'
 });
 
 function validateHashTags (value) {

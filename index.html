@@ -114,13 +114,19 @@
                 </fieldset>
 
                 <!-- Добавление хэш-тегов и комментария к изображению -->
-                <fieldset class="img-upload__text text">
+                <fieldset class="img-upload__text text form-group">
                   <div class="img-upload__field-wrapper">
                     <input type="text" class="text__hashtags" name="hashtags"  placeholder="#ХэшТег"
-                    data-pristine-maxlength-message = 'Максиммальная длина 140 символов' tabindex="0">
+                     tabindex="0"
+                     data-pristine-minlength-message = 'Минимальная длина 2 символа'
+                     data-pristine-minlength="2"
+                    >
                   </div>
                   <div class="img-upload__field-wrapper">
-                    <textarea class="text__description" name="description" placeholder="Ваш комментарий..." tabindex="1"></textarea>
+                    <textarea class="text__description" name="description" placeholder="Ваш комментарий..." tabindex="1"
+                    data-pristine-maxlength-message = 'Максимальная длина 140 символов'
+                    data-pristine-maxlength="140"
+                    ></textarea>
                   </div>
                 </fieldset>
 
@@ -155,7 +161,7 @@
           </div>
 
           <!-- Комментарии к изображению -->
-          <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
+          <div class="social__comment-count"><span class="comments-count__shown">5</span> из <span class="comments-count">125</span> комментариев</div>
           <ul class="social__comments">
 
           </ul>

@@ -17,6 +17,8 @@ elems.forEach((elem) => {
 });
 
 picContainer.addEventListener('click', (evt) => {
-  fullSizeDisplay(evt.target.parentElement.dataElem);
+  if (evt.target.parentElement.getAttribute('class') === 'picture') {
+    fullSizeDisplay(evt.target.parentElement.dataElem);
+  }
 });
 

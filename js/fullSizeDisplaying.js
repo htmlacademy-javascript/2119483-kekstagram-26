@@ -12,7 +12,7 @@ const commentsCountShown = socialCommentCount.querySelector('.comments-count__sh
 const socialComments = bigPicture.querySelector('.social__comments');
 const socialCommentTemplate = document.querySelector('#socialComment');
 const socialItem = socialCommentTemplate.content.querySelector('li');
-let handlerRef = '';
+let handlerRef = undefined;
 
 function fullSizeDisplay(elem) {
   const {url, description, likes, comments} = elem;
@@ -25,7 +25,6 @@ function fullSizeDisplay(elem) {
   bigPicture.classList.remove('hidden');
   const socialCaption = bigPicture.querySelector('.social__caption');
   socialCaption.textContent = description;
-
   modalOpen.classList.add('modal-open');
   socialComments.innerHTML = '';
 
@@ -36,11 +35,12 @@ function fullSizeDisplay(elem) {
   } else {
     socialComments.innerHTML = '';
     commentsCountShown.textContent = COMMENTS_STEP;
-    commentsLoader.classList.remove('hidden');
     createCommentsList(comments.slice(0, COMMENTS_STEP), socialItem, socialComments);
-    handlerRef = addOtherComments(comments);
-    commentsLoader.addEventListener('click', handlerRef);
+    commentsLoader.classList.remove('hidden');
   }
+  handlerRef = addOtherComments(comments);
+  commentsLoader.addEventListener('click', handlerRef);
+  window.addEventListener('keydown', fullSizeKeyDown);
 }
 
 function addOtherComments(arr) {
@@ -73,17 +73,20 @@ function createCommentsList(arr, item, root) {
   }
 }
 
-closeButton.addEventListener('click', () => {
+function unActivate(){
   modalOpen.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
   commentsLoader.removeEventListener('click', handlerRef);
-});
+  handlerRef = undefined;
+  window.removeEventListener('keydown', fullSizeKeyDown);
+}
 
-window.addEventListener('keydown', (evt) => {
+function fullSizeKeyDown(evt) {
   if (isEscapeKey(evt)) {
-    modalOpen.classList.remove('modal-open');
-    bigPicture.classList.add('hidden');
-    commentsLoader.removeEventListener('click', handlerRef);
-  }});
+    unActivate();
+  }
+}
+
+closeButton.addEventListener('click', unActivate);
 
 export {fullSizeDisplay};

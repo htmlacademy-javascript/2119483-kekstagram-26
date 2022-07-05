@@ -64,7 +64,7 @@ function validateHashTags (value) {
 pristine.addValidator(
   textHashtags,
   validateHashTags,
-  'не пустая строка'
+  'непустая строка'
 );
 
 function validateDescription (value) {
@@ -85,4 +85,3 @@ function validFormHandler(evt) {
 
 upLoadFile.addEventListener('change', upLoadFileHandler);
 imgUploadForm.addEventListener('submit', validFormHandler);
-

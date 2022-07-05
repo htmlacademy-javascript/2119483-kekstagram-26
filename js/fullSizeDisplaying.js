@@ -2,6 +2,7 @@
 import {isEscapeKey} from './utils.js';
 
 const COMMENTS_STEP = 5;
+let counter = 1;
 
 const bigPicture = document.querySelector('.big-picture');
 const modalOpen = document.querySelector('body');
@@ -12,7 +13,6 @@ const commentsCountShown = socialCommentCount.querySelector('.comments-count__sh
 const socialComments = bigPicture.querySelector('.social__comments');
 const socialCommentTemplate = document.querySelector('#socialComment');
 const socialItem = socialCommentTemplate.content.querySelector('li');
-let handlerRef = undefined;
 
 function fullSizeDisplay(elem) {
   const {url, description, likes, comments} = elem;
@@ -26,39 +26,14 @@ function fullSizeDisplay(elem) {
   const socialCaption = bigPicture.querySelector('.social__caption');
   socialCaption.textContent = description;
   modalOpen.classList.add('modal-open');
+  commentsLoader.classList.add('hidden');
   socialComments.innerHTML = '';
 
-  if (comments.length <= COMMENTS_STEP){
-    commentsCountShown.textContent = comments.length;
-    createCommentsList(comments, socialItem, socialComments);
-    commentsLoader.classList.add('hidden');
-  } else {
-    socialComments.innerHTML = '';
-    commentsCountShown.textContent = COMMENTS_STEP;
-    createCommentsList(comments.slice(0, COMMENTS_STEP), socialItem, socialComments);
+  showComments(comments);
+  if (comments.length > COMMENTS_STEP) {
     commentsLoader.classList.remove('hidden');
   }
-  handlerRef = addOtherComments(comments);
-  commentsLoader.addEventListener('click', handlerRef);
-  window.addEventListener('keydown', fullSizeKeyDown);
-}
-
-function addOtherComments(arr) {
-  let start = COMMENTS_STEP;
-  let end = start + COMMENTS_STEP;
-  let newArr = [];
-  return function commentsLoadHandler() {
-    newArr = arr.slice(start, end);
-    if (newArr.length <= COMMENTS_STEP) {
-      commentsCountShown.textContent = arr.length;
-      commentsLoader.classList.add('hidden');
-    } else {
-      commentsCountShown.textContent = start;
-    }
-    createCommentsList(newArr, socialItem, socialComments);
-    start += COMMENTS_STEP;
-    end += COMMENTS_STEP;
-  };
+  commentsLoader.addEventListener('click', () => showRestComments(comments));
 }
 
 function createCommentsList(arr, item, root) {
@@ -73,12 +48,33 @@ function createCommentsList(arr, item, root) {
   }
 }
 
-function unActivate(){
+function showComments(array) {
+  counter = 1;
+  socialComments.innerHTML = '';
+  createCommentsList(array.slice(0, COMMENTS_STEP), socialItem, socialComments);
+  commentsCountShown.textContent = array.length < COMMENTS_STEP ? array.length : COMMENTS_STEP;
+}
+
+function showRestComments(array) {
+  counter++;
+  let restArray = [];
+  socialComments.innerHTML = '';
+  if (array.length < COMMENTS_STEP * counter){
+    restArray = array.slice(0, array.length);
+    createCommentsList(restArray, socialItem, socialComments);
+  } else {
+    restArray = array.slice(0, COMMENTS_STEP*counter);
+    createCommentsList(array.slice(0, COMMENTS_STEP*counter), socialItem, socialComments);
+  }
+  commentsCountShown.textContent = array.length;
+  if (restArray.length === array.length){
+    commentsLoader.classList.add('hidden');
+  }
+}
+
+function unActivate() {
   modalOpen.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
-  commentsLoader.removeEventListener('click', handlerRef);
-  handlerRef = undefined;
-  window.removeEventListener('keydown', fullSizeKeyDown);
 }
 
 function fullSizeKeyDown(evt) {
@@ -87,6 +83,7 @@ function fullSizeKeyDown(evt) {
   }
 }
 
+window.addEventListener('keydown', fullSizeKeyDown);
 closeButton.addEventListener('click', unActivate);
 
 export {fullSizeDisplay};

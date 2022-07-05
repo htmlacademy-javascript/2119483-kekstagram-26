@@ -12,13 +12,10 @@ elems.forEach((elem) => {
   picElem.querySelector('.picture__comments').textContent = elem.comments.length;
   picElem.querySelector('.picture__likes').textContent = elem.likes;
   picElem.querySelector('.picture__img').alt = elem.description;
-  picElem.dataElem =  elem;
+  picElem.addEventListener('click', () => {
+    fullSizeDisplay(elem);
+  });
   picContainer.appendChild(picElem);
 });
 
-picContainer.addEventListener('click', (evt) => {
-  if (evt.target.parentElement.getAttribute('class') === 'picture') {
-    fullSizeDisplay(evt.target.parentElement.dataElem);
-  }
-});
 

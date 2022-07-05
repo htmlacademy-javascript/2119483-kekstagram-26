@@ -77,9 +77,9 @@ pristine.addValidator(
   'До 140 символов'
 );
 
-function validFormHandler(evt) {
-  if (!pristine.validate()){
-    evt.preventDefault();
+function validFormHandler() {
+  if (!pristine.validate() || ''){
+    //
   }
 }
 

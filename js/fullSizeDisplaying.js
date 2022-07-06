@@ -26,13 +26,9 @@ function fullSizeDisplay(elem) {
   const socialCaption = bigPicture.querySelector('.social__caption');
   socialCaption.textContent = description;
   modalOpen.classList.add('modal-open');
-  commentsLoader.classList.add('hidden');
   socialComments.innerHTML = '';
 
   showComments(comments);
-  if (comments.length > COMMENTS_STEP) {
-    commentsLoader.classList.remove('hidden');
-  }
   commentsLoader.addEventListener('click', () => showRestComments(comments));
 }
 
@@ -51,6 +47,9 @@ function createCommentsList(arr, item, root) {
 function showComments(array) {
   counter = 1;
   socialComments.innerHTML = '';
+  if (array.length > COMMENTS_STEP) {
+    commentsLoader.classList.remove('hidden');
+  }
   createCommentsList(array.slice(0, COMMENTS_STEP), socialItem, socialComments);
   commentsCountShown.textContent = array.length < COMMENTS_STEP ? array.length : COMMENTS_STEP;
 }
@@ -59,13 +58,8 @@ function showRestComments(array) {
   counter++;
   let restArray = [];
   socialComments.innerHTML = '';
-  if (array.length < COMMENTS_STEP * counter){
-    restArray = array.slice(0, array.length);
-    createCommentsList(restArray, socialItem, socialComments);
-  } else {
-    restArray = array.slice(0, COMMENTS_STEP*counter);
-    createCommentsList(array.slice(0, COMMENTS_STEP*counter), socialItem, socialComments);
-  }
+  restArray = array.slice(0, COMMENTS_STEP*counter);
+  createCommentsList(restArray, socialItem, socialComments);
   commentsCountShown.textContent = array.length;
   if (restArray.length === array.length){
     commentsLoader.classList.add('hidden');
@@ -86,4 +80,4 @@ function fullSizeKeyDown(evt) {
 window.addEventListener('keydown', fullSizeKeyDown);
 closeButton.addEventListener('click', unActivate);
 
-export {fullSizeDisplay};
+export {fullSizeDisplay, showRestComments};

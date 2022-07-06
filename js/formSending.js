@@ -64,7 +64,7 @@ function validateHashTags (value) {
 pristine.addValidator(
   textHashtags,
   validateHashTags,
-  'непустая строка'
+  'Некорректный формат хештега'
 );
 
 function validateDescription (value) {
@@ -74,13 +74,11 @@ function validateDescription (value) {
 pristine.addValidator(
   textDescription,
   validateDescription,
-  'До 140 символов'
+  'Длина строки до 140 символов'
 );
 
 function validFormHandler() {
-  if (!pristine.validate() || ''){
-    //
-  }
+  pristine.validate();
 }
 
 upLoadFile.addEventListener('change', upLoadFileHandler);

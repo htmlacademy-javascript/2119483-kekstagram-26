@@ -49,7 +49,7 @@ function getUniqueRandomPositiveInt (a, b, arr) {
 
 function createComment() {
   return {
-    id: getUniqueRandomPositiveInt (0, 200, arrIdComments),
+    id: getUniqueRandomPositiveInt (0, 1000, arrIdComments),
     avatar: `img/avatar-${getRandomPositiveInteger (1, 6)}.svg`,
     message: getRandomArrayElement(MESSAGES),
     name: getRandomArrayElement(NAMES)
@@ -71,7 +71,7 @@ function createObject() {
     url: `photos/${getUniqueRandomPositiveInt(1, 25, arrIdUrls)}.jpg`,
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomPositiveInteger (15, 200),
-    comments: getComments(5)
+    comments: getComments(10)
   };
 }
 

@@ -11,6 +11,7 @@ const textDescription = imgUpload.querySelector('.text__description');
 function upLoadFileHandler () {
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  document.addEventListener('keydown', keyDownHandler);
   upLoadCancel.addEventListener('click', upLoadCancelHandler);
 }
 
@@ -20,32 +21,50 @@ function upLoadCancelHandler() {
   upLoadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
+  document.removeEventListener('keydown', keyDownHandler);
 }
 
 function keyDownHandler(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    upLoadCancelHandler();
+    if (document.activeElement === textHashtags || document.activeElement === textDescription) {
+      evt.stopPropagation();
+    } else {
+      upLoadCancelHandler();
+    }
   }
 }
 
 const pristine = new Pristine(imgUploadForm, {
-  classTo: 'img-upload__form',
-  errorClass: 'img-upload__form--invalid',
-  successClass: 'img-upload__form--valid',
-  errorTextParent: 'img-upload__form',
-  errorTextTag: 'span',
-  errorTextClass: 'form_error'
+  classTo: 'form-group',
+  errorClass: 'has-danger',
+  successClass: 'has-success',
+  errorTextParent: 'form-group',
+  errorTextTag: 'div',
+  errorTextClass: 'text-help'
 });
 
 function validateHashTags (value) {
-  return value !== '';
+  const regexp = /#[A-Za-zА-Яа-я]{1,19}/;
+  const hashTags = value.toUpperCase().split(' ');
+  function checkHashTag(elem) {
+    return regexp.test(elem);
+  }
+  function checkRepeatHashTags(v,i,a) {
+    return a.lastIndexOf(v)!==i;
+  }
+  const isMatchRegExp = hashTags.every(checkHashTag);
+  const isGetRepeatHashTag = hashTags.some(checkRepeatHashTags);
+  if (isMatchRegExp && !isGetRepeatHashTag && hashTags.length <= 5){
+    return true;
+  }
+  return false;
 }
 
 pristine.addValidator(
   textHashtags,
   validateHashTags,
-  'не пустая строка'
+  'Некорректный формат хештега'
 );
 
 function validateDescription (value) {
@@ -55,15 +74,12 @@ function validateDescription (value) {
 pristine.addValidator(
   textDescription,
   validateDescription,
-  'До 140 символов'
+  'Длина строки до 140 символов'
 );
 
-function validFormHandler(evt) {
-  if (!pristine.validate()){
-    evt.preventDefault();
-  }
+function validFormHandler() {
+  pristine.validate();
 }
 
-imgUploadForm.addEventListener('submit', validFormHandler);
-document.addEventListener('keydown', keyDownHandler);
 upLoadFile.addEventListener('change', upLoadFileHandler);
+imgUploadForm.addEventListener('submit', validFormHandler);

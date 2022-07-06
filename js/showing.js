@@ -1,9 +1,12 @@
 import {createObjects} from './data.js';
-import {fullSizeDisplay} from './fullSizeDisplaying.js';
+import {fullSizeDisplay, showRestComments} from './fullSizeDisplaying.js';
 
 const picContainer = document.querySelector('.pictures');
 const picTemplate = document.querySelector('#picture');
 const picItem = picTemplate.content.querySelector('a');
+const bigPicture = document.querySelector('.big-picture');
+const commentsLoader = bigPicture.querySelector('.comments-loader');
+
 const elems = createObjects();
 
 elems.forEach((elem) => {
@@ -11,9 +14,9 @@ elems.forEach((elem) => {
   picElem.querySelector('.picture__img').src= elem.url;
   picElem.querySelector('.picture__comments').textContent = elem.comments.length;
   picElem.querySelector('.picture__likes').textContent = elem.likes;
-  picElem.addEventListener('click', () => {
-    fullSizeDisplay(elem);
-  });
+  picElem.querySelector('.picture__img').alt = elem.description;
+  picElem.addEventListener('click', () => fullSizeDisplay(elem));
+  commentsLoader.addEventListener('click', () => showRestComments(elem.comments));
   picContainer.appendChild(picElem);
 });
 

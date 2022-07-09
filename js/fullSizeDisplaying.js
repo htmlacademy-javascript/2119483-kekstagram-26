@@ -27,7 +27,6 @@ function fullSizeDisplay(elem) {
   socialCaption.textContent = description;
   modalOpen.classList.add('modal-open');
   socialComments.innerHTML = '';
-
   showComments(comments);
   commentsLoader.addEventListener('click', () => showRestComments(comments));
 }
@@ -56,9 +55,8 @@ function showComments(array) {
 
 function showRestComments(array) {
   counter++;
-  let restArray = [];
+  const restArray = array.slice(0, COMMENTS_STEP*counter);
   socialComments.innerHTML = '';
-  restArray = array.slice(0, COMMENTS_STEP*counter);
   createCommentsList(restArray, socialItem, socialComments);
   commentsCountShown.textContent = array.length;
   if (restArray.length === array.length){

@@ -10,7 +10,7 @@ const textDescription = imgUpload.querySelector('.text__description');
 const scaleControlSmaller = imgFilterForm.querySelector('.scale__control--smaller');
 const scaleControlBigger = imgFilterForm.querySelector('.scale__control--bigger');
 const scaleControlValue = imgFilterForm.querySelector('.scale__control--value');
-const imgUploadPreview = imgFilterForm.querySelector('.img-upload__preview').querySelector('img');
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
 imgUploadPreview.setAttribute('style', '');
 imgUploadPreview.style.cssText = '';
 const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level');
@@ -24,6 +24,7 @@ function upLoadFileHandler () {
   document.body.classList.add('modal-open');
   imgUploadPreview.classList.add('effects_preview--none');
   sliderContainer.classList.add('hidden');
+  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
   scaleControlSmaller.addEventListener('click', scaleChangeHandler);
@@ -39,6 +40,11 @@ function upLoadCancelHandler() {
   upLoadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
+  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
+  imgUploadPreview.style.cssText = 'transform: scale(1.0)';
+  scaleControlValue.value = '100%';
+  scaleImg = 1;
+  effectSettings = {};
   scaleControlSmaller.removeEventListener('click', scaleChangeHandler);
   scaleControlBigger.removeEventListener('click', scaleChangeHandler);
   effectsList.removeEventListener('click', effectsListHandler);
@@ -49,10 +55,9 @@ function keyDownHandler(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     if (document.activeElement === textHashtags || document.activeElement === textDescription) {
-      evt.stopPropagation();
-    } else {
-      upLoadCancelHandler();
+      return false;
     }
+    upLoadCancelHandler();
   }
 }
 
@@ -125,7 +130,12 @@ function scaleChangeHandler(evt) {
   }
   scaleControlValue.value += '%';
   scaleImg = (res/100).toFixed(2);
-  updateImgStyle();
+  if (effectSettings){
+    updateImgStyle();
+  } else {
+    effectSettings = getEffectSettings('--none');
+    updateImgStyle();
+  }
 }
 
 noUiSlider.create(sliderElement, {
@@ -150,8 +160,13 @@ noUiSlider.create(sliderElement, {
 });
 
 function getEffectSettings (effectVal) {
-  const returnedObj = {};
-  returnedObj.effectName = `effects__preview${effectVal}`;
+  const returnedObj = {
+    effectName: `effects__preview${effectVal}`,
+    sliderOptions: {},
+    filterType: '',
+    filterMeasure: '',
+    filterIntensity: 1
+  };
   switch (effectVal){
     case '--chrome':
       returnedObj.sliderOptions = {
@@ -219,10 +234,6 @@ function getEffectSettings (effectVal) {
       returnedObj.filterIntensity = 3;
       return returnedObj;
     default:
-      returnedObj.sliderOptions = {};
-      returnedObj.filterType = '';
-      returnedObj.filterMeasure = '';
-      returnedObj.filterIntensity = 0;
       return returnedObj;
   }
 }
@@ -243,6 +254,7 @@ function effectsListHandler(evt) {
   const selectedEffectClassName = evt.target.parentElement.querySelector('span').className;
   const effectClassName = selectedEffectClassName.replaceAll('effects__preview', '').trim();
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
+  imgUploadPreview.style.cssText = '';
   effectSettings = getEffectSettings(effectClassName);
   sliderElement.noUiSlider.updateOptions(effectSettings.sliderOptions);
   updateImgStyle();

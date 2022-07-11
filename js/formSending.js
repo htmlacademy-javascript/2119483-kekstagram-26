@@ -7,15 +7,15 @@ const upLoadFile = imgUpload.querySelector('#upload-file');
 const upLoadCancel = imgUpload.querySelector('#upload-cancel');
 const textHashtags = imgUpload.querySelector('.text__hashtags');
 const textDescription = imgUpload.querySelector('.text__description');
-const scaleControlSmaller = imgFilterForm.querySelector('.scale__control--smaller');
-const scaleControlBigger = imgFilterForm.querySelector('.scale__control--bigger');
+const imgUploadScale = document.querySelector('.img-upload__scale');
 const scaleControlValue = imgFilterForm.querySelector('.scale__control--value');
-const imgUploadPreview = document.querySelector('.img-upload__preview img');
+const imgUploadPreview = imgFilterForm.querySelector('.img-upload__preview img');
 imgUploadPreview.setAttribute('style', '');
 imgUploadPreview.style.cssText = '';
 const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level');
 const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
+const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
 let effectSettings = undefined;
 let scaleImg = 1;
 
@@ -27,8 +27,8 @@ function upLoadFileHandler () {
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
-  scaleControlSmaller.addEventListener('click', scaleChangeHandler);
-  scaleControlBigger.addEventListener('click', scaleChangeHandler);
+  scaleControlValue.setAttribute('value', '100%');
+  imgUploadScale.addEventListener('click', scaleChangeHandler);
   effectsList.addEventListener('click', effectsListHandler);
   document.addEventListener('keydown', keyDownHandler);
   upLoadCancel.addEventListener('click', upLoadCancelHandler);
@@ -45,8 +45,7 @@ function upLoadCancelHandler() {
   scaleControlValue.value = '100%';
   scaleImg = 1;
   effectSettings = {};
-  scaleControlSmaller.removeEventListener('click', scaleChangeHandler);
-  scaleControlBigger.removeEventListener('click', scaleChangeHandler);
+  imgUploadScale.removeEventListener('click', scaleChangeHandler);
   effectsList.removeEventListener('click', effectsListHandler);
   document.removeEventListener('keydown', keyDownHandler);
 }
@@ -111,25 +110,22 @@ function scaleChangeHandler(evt) {
   let res = parseInt(scaleControlValue.value, 10);
   if (evt.target.className.includes('smaller')){
     if (res <= 25 ){
-      scaleControlValue.value = 0;
       res = 0;
     }
     else {
       res -= 25;
-      scaleControlValue.value = res;
     }
-  } else {
+  } else if (evt.target.className.includes('bigger')){
     if ((res + 25) >= 100 ){
-      scaleControlValue.value = 100;
       res = 100;
     }
     else {
       res += 25;
-      scaleControlValue.value = res;
     }
   }
-  scaleControlValue.value += '%';
-  scaleImg = (res/100).toFixed(2);
+  scaleControlValue.value = `${res}%`;
+  scaleControlValue.setAttribute('value', `${res}%`);
+  scaleImg = res/100;
   if (effectSettings){
     updateImgStyle();
   } else {
@@ -265,6 +261,7 @@ sliderElement.noUiSlider.on('update', () => {
   if (effectSettings){
     effectSettings.filterIntensity = sliderVal;
     updateImgStyle();
+    effectLevelValue.setAttribute('value', effectSettings.filterIntensity);
   }
 });
 

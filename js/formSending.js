@@ -1,6 +1,7 @@
 import {isEscapeKey} from './utils.js';
+import {sendData} from './api.js';
 
-const imgUpload  = document.querySelector('.img-upload');
+const imgUpload = document.querySelector('.img-upload');
 const imgUploadForm = imgUpload.querySelector('.img-upload__form');
 const imgFilterForm = imgUpload.querySelector('.img-upload__overlay');
 const upLoadFile = imgUpload.querySelector('#upload-file');
@@ -16,6 +17,7 @@ const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level')
 const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
 const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
+const submitButton = imgUpload.querySelector('.img-upload__submit');
 let effectSettings = undefined;
 let scaleImg = 1;
 
@@ -71,9 +73,10 @@ const pristine = new Pristine(imgUploadForm, {
 
 function validateHashTags (value) {
   const regexp = /#[A-Za-zА-Яа-я]{1,19}/;
-  const hashTags = value.toUpperCase().split(' ');
+  let hashTags = value.toUpperCase().split(' ');
+  hashTags = hashTags.filter((elem) => elem.length > 0);
   function checkHashTag(elem) {
-    return regexp.test(elem);
+    return regexp.test(elem) && elem.length >= 2;
   }
   function checkRepeatHashTags(v,i,a) {
     return a.lastIndexOf(v)!==i;
@@ -101,10 +104,6 @@ pristine.addValidator(
   validateDescription,
   'Длина строки до 140 символов'
 );
-
-function validFormHandler() {
-  pristine.validate();
-}
 
 function scaleChangeHandler(evt) {
   let res = parseInt(scaleControlValue.value, 10);
@@ -265,6 +264,38 @@ sliderElement.noUiSlider.on('update', () => {
   }
 });
 
+function blockSubmitButton () {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Сохраняю...';
+}
+
+function unblockSubmitButton ()  {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Сохранить';
+}
+
+function submitFormHandler(evt) {
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(
+      () => { ///success
+        // onSuccess();
+        //console.log('успешно отправлено');
+        unblockSubmitButton();
+      },
+      () => {//fail
+        //console.log('Не удалось отправить форму. Попробуйте ещё раз');
+        unblockSubmitButton();
+      },
+      new FormData(evt.target), //formData
+    );
+  } else {
+    //console.log('');
+  }
+}
+
 upLoadFile.addEventListener('change', upLoadFileHandler);
-imgUploadForm.addEventListener('submit', validFormHandler);
+imgUploadForm.addEventListener('submit', submitFormHandler);
 

@@ -18,8 +18,16 @@ const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
 const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
 const submitButton = imgUpload.querySelector('.img-upload__submit');
+const effectNone = imgUpload.querySelector('#effect-none');
 let effectSettings = undefined;
 let scaleImg = 1;
+
+const errorTemplate = document.querySelector('#error');
+const errorSection = errorTemplate.content.querySelector('section');
+const errorButton = errorTemplate.content.querySelector('.error__button');
+const successTemplate = document.querySelector('#success');
+const successSection = successTemplate.content.querySelector('section');
+const successButton = successTemplate.content.querySelector('.success__button');
 
 function upLoadFileHandler () {
   imgFilterForm.classList.remove('hidden');
@@ -47,6 +55,7 @@ function upLoadCancelHandler() {
   scaleControlValue.value = '100%';
   scaleImg = 1;
   effectSettings = {};
+  effectNone.checked = true;
   imgUploadScale.removeEventListener('click', scaleChangeHandler);
   effectsList.removeEventListener('click', effectsListHandler);
   document.removeEventListener('keydown', keyDownHandler);
@@ -58,7 +67,15 @@ function keyDownHandler(evt) {
     if (document.activeElement === textHashtags || document.activeElement === textDescription) {
       return false;
     }
-    upLoadCancelHandler();
+    else if (successSection.parentElement) {
+      closeSuccessFormHandler();
+    }
+    else if (errorSection.parentElement) {
+      closeErrorFormHandler();
+    }
+    else {
+      upLoadCancelHandler();
+    }
   }
 }
 
@@ -274,25 +291,55 @@ function unblockSubmitButton ()  {
   submitButton.textContent = 'Сохранить';
 }
 
+function onFail() {
+  errorSection.setAttribute('style', 'z-index: 2');
+  document.body.appendChild(errorSection);
+}
+
+function closeErrorFormHandler() {
+  document.body.removeChild(errorSection);
+}
+
+function maybeCloseFormHandler(evt) {
+  if (evt.target === errorSection) {
+    closeErrorFormHandler();
+  } else if (evt.target === successSection) {
+    closeSuccessFormHandler();
+  }
+}
+
+function onSuccess() {
+  successSection.setAttribute('style', 'z-index: 2');
+  document.body.appendChild(successSection);
+}
+
+function closeSuccessFormHandler() {
+  document.body.removeChild(successSection);
+  upLoadCancelHandler();
+}
+
+errorButton.addEventListener('click', closeErrorFormHandler);
+errorSection.addEventListener('click', maybeCloseFormHandler);
+
+successButton.addEventListener('click', closeSuccessFormHandler);
+successSection.addEventListener('click', maybeCloseFormHandler);
+
 function submitFormHandler(evt) {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
     sendData(
-      () => { ///success
-        // onSuccess();
-        //console.log('успешно отправлено');
+      () => {
+        onSuccess();
         unblockSubmitButton();
       },
-      () => {//fail
-        //console.log('Не удалось отправить форму. Попробуйте ещё раз');
+      () => {
+        onFail();
         unblockSubmitButton();
       },
-      new FormData(evt.target), //formData
+      new FormData(evt.target),
     );
-  } else {
-    //console.log('');
   }
 }
 

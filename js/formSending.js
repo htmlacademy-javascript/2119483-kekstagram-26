@@ -1,4 +1,4 @@
-import {isEscapeKey} from './utils.js';
+import {isEscapeKey, checkHashTag, checkRepeatHashTags, validateDescription} from './utils.js';
 import {sendData} from './api.js';
 
 const imgUpload = document.querySelector('.img-upload');
@@ -32,9 +32,9 @@ const successButton = successTemplate.content.querySelector('.success__button');
 function upLoadFileHandler () {
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
   imgUploadPreview.classList.add('effects_preview--none');
   sliderContainer.classList.add('hidden');
-  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
   scaleControlValue.setAttribute('value', '100%');
@@ -50,12 +50,15 @@ function upLoadCancelHandler() {
   upLoadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
+
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
+  imgUploadPreview.classList.add('effects_preview--none');
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
   scaleImg = 1;
   effectSettings = {};
   effectNone.checked = true;
+  sliderContainer.classList.add('hidden');
   imgUploadScale.removeEventListener('click', scaleChangeHandler);
   effectsList.removeEventListener('click', effectsListHandler);
   document.removeEventListener('keydown', keyDownHandler);
@@ -92,13 +95,8 @@ function validateHashTags (value) {
   const regexp = /#[A-Za-zА-Яа-я]{1,19}/;
   let hashTags = value.toUpperCase().split(' ');
   hashTags = hashTags.filter((elem) => elem.length > 0);
-  function checkHashTag(elem) {
-    return regexp.test(elem) && elem.length >= 2;
-  }
-  function checkRepeatHashTags(v,i,a) {
-    return a.lastIndexOf(v)!==i;
-  }
-  const isMatchRegExp = hashTags.every(checkHashTag);
+
+  const isMatchRegExp = hashTags.every((elem) => checkHashTag(elem, regexp));
   const isGetRepeatHashTag = hashTags.some(checkRepeatHashTags);
   if (isMatchRegExp && !isGetRepeatHashTag && hashTags.length <= 5){
     return true;
@@ -111,10 +109,6 @@ pristine.addValidator(
   validateHashTags,
   'Некорректный формат хештега'
 );
-
-function validateDescription (value) {
-  return value.length <= 140;
-}
 
 pristine.addValidator(
   textDescription,
@@ -252,7 +246,7 @@ function getEffectSettings (effectVal) {
 
 function updateImgStyle() {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
-  if (effectName === 'effects__preview--none'){
+  if (effectName === 'effects__preview--none' || effectName === undefined){
     sliderContainer.classList.add('hidden');
     imgUploadPreview.style.cssText = `transform: scale(${scaleImg});`;
   } else {
@@ -295,12 +289,11 @@ function onFail() {
   errorSection.setAttribute('style', 'z-index: 2');
   document.body.appendChild(errorSection);
 }
-
 function closeErrorFormHandler() {
   document.body.removeChild(errorSection);
 }
 
-function maybeCloseFormHandler(evt) {
+function arbitraryAreaHandler(evt) {
   if (evt.target === errorSection) {
     closeErrorFormHandler();
   } else if (evt.target === successSection) {
@@ -319,10 +312,11 @@ function closeSuccessFormHandler() {
 }
 
 errorButton.addEventListener('click', closeErrorFormHandler);
-errorSection.addEventListener('click', maybeCloseFormHandler);
+errorSection.addEventListener('click', arbitraryAreaHandler);
 
 successButton.addEventListener('click', closeSuccessFormHandler);
-successSection.addEventListener('click', maybeCloseFormHandler);
+successSection.addEventListener('click', arbitraryAreaHandler);
+
 
 function submitFormHandler(evt) {
   evt.preventDefault();
@@ -332,13 +326,12 @@ function submitFormHandler(evt) {
     sendData(
       () => {
         onSuccess();
-        unblockSubmitButton();
       },
       () => {
         onFail();
-        unblockSubmitButton();
       },
       new FormData(evt.target),
+      unblockSubmitButton()
     );
   }
 }

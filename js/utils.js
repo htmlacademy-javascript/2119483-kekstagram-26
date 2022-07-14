@@ -15,7 +15,7 @@ function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-const showAlert = (message) => {
+function showAlert(message) {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
@@ -34,6 +34,17 @@ const showAlert = (message) => {
   setTimeout(() => {
     alertContainer.remove();
   }, ALERT_SHOW_TIME);
-};
+}
 
-export {getRandomArrayElement, getRandomPositiveInteger, isEscapeKey, showAlert};
+function checkHashTag(elem, regexp) {
+  return regexp.test(elem) && elem.length >= 2;
+}
+function checkRepeatHashTags(v,i,a) {
+  return a.lastIndexOf(v)!==i;
+}
+
+function validateDescription (value) {
+  return value.length <= 140;
+}
+
+export {getRandomArrayElement, getRandomPositiveInteger, isEscapeKey, showAlert, checkHashTag, checkRepeatHashTags, validateDescription};

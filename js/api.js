@@ -5,38 +5,32 @@ function getData (onSuccess) {
   fetch('https://26.javascript.pages.academy/kekstagram/data')
     .then((response) => {
       if (response.ok) {
-        response.json()
-          .then((data) => onSuccess(data))
-          .catch(() => {
-            showAlert ('Некорректный формат данных');
-          });
-      } else {
-        showAlert (`Сервер вернул ошибку: ${response.status} - ${response.statusText}`);
+        return response;
       }
+      throw new Error(`${response.status} — ${response.statusText}`);
     })
-    .catch(()=> {
-      showAlert ('Не удалось загрузить данные c сервера');
-    });
+    .then((response) => response.json())
+    .then((data) => onSuccess(data))
+    .catch((error) => showAlert(error));
 }
 
-const sendData = (onSuccess, onFail, body) => {
+const sendData = (onSuccess, onFail, body, onFinal) => {
   fetch(
     'https://26.javascript.pages.academy/kekstagram',
     {
       method: 'POST',
       body,
     },
-  )
-    .then((response) => {
-      if (response.ok) {
-        onSuccess();
-      } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз');
-      }
-    })
-    .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
-    });
+  ).then((response) => {
+    if (response.ok) {
+      return response;
+    }
+    throw new Error(`${response.status} — ${response.statusText}`);
+  })
+    .then((response) => response.json())
+    .then((data) => onSuccess(data))
+    .catch((error) => onFail(error))
+    .finally(onFinal);
 };
 
 export {getData, sendData};

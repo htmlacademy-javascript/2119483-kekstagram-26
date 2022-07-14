@@ -1,7 +1,6 @@
 
-import {isEscapeKey} from './utils.js';
+import {isEscapeKey, COMMENTS_STEP} from './utils.js';
 
-const COMMENTS_STEP = 5;
 let counter = 1;
 let commentsList = [];
 
@@ -58,7 +57,7 @@ function showComments(comments) {
 
 function showRestComments() {
   counter++;
-  const restArray = commentsList.slice(0, COMMENTS_STEP*counter);
+  const restArray = commentsList.slice(0, COMMENTS_STEP * counter);
   socialComments.innerHTML = '';
   createCommentsList(restArray, socialItem, socialComments);
   commentsCountShown.textContent = restArray.length;
@@ -70,7 +69,6 @@ function showRestComments() {
 function unActivate() {
   modalOpen.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
-
 }
 
 function fullSizeKeyDown(evt) {

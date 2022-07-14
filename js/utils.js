@@ -1,15 +1,6 @@
 const ALERT_SHOW_TIME = 5000;
-
-function getRandomPositiveInteger (a, b) {
-  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-}
-
-function getRandomArrayElement(array) {
-  return array[getRandomPositiveInteger (0, array.length - 1)];
-}
+const URL = 'https://26.javascript.pages.academy/kekstagram';
+const COMMENTS_STEP = 5;
 
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
@@ -39,6 +30,7 @@ function showAlert(message) {
 function checkHashTag(elem, regexp) {
   return regexp.test(elem) && elem.length >= 2;
 }
+
 function checkRepeatHashTags(v,i,a) {
   return a.lastIndexOf(v)!==i;
 }
@@ -47,4 +39,12 @@ function validateDescription (value) {
   return value.length <= 140;
 }
 
-export {getRandomArrayElement, getRandomPositiveInteger, isEscapeKey, showAlert, checkHashTag, checkRepeatHashTags, validateDescription};
+export {
+  isEscapeKey,
+  showAlert,
+  checkHashTag,
+  checkRepeatHashTags,
+  validateDescription,
+  URL,
+  COMMENTS_STEP
+};

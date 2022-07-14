@@ -1,8 +1,8 @@
 
-import {showAlert} from './utils.js';
+import {showAlert, URL} from './utils.js';
 
 function getData (onSuccess) {
-  fetch('https://26.javascript.pages.academy/kekstagram/data')
+  fetch(`${URL}/data`)
     .then((response) => {
       if (response.ok) {
         return response;
@@ -16,7 +16,7 @@ function getData (onSuccess) {
 
 const sendData = (onSuccess, onFail, body, onFinal) => {
   fetch(
-    'https://26.javascript.pages.academy/kekstagram',
+    URL,
     {
       method: 'POST',
       body,

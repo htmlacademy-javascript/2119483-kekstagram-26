@@ -1,4 +1,4 @@
-import {isEscapeKey, validateHashTags, getRepeatHashTags, getHashTagAmount, getHashTagLength, validateDescription, isClosePopup} from './utils.js';
+import {isEscapeKey, validateHashTags, getRepeatHashTags, getHashTagAmount, getHashTagLength, validateDescription, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
 import {MAX_COMMENT_LENGTH, MAX_HASHTAGS_AMOUNT, MIN_HASHTAG_LENGTH, ZOOM_STEP} from './constants.js';
 
@@ -247,7 +247,7 @@ function getEffectSettings (effectVal) {
   }
 }
 
-function updateImgStyle() {
+function updateImgStyle () {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
   if (effectName === 'effects__preview--none' || !effectName){
     sliderContainer.classList.add('hidden');
@@ -259,7 +259,7 @@ function updateImgStyle() {
   }
 }
 
-function effectsListHandler(evt) {
+function effectsListHandler (evt) {
   const selectedEffectClassName = evt.target.parentElement.querySelector('span').className;
   const effectClassName = selectedEffectClassName.replaceAll('effects__preview', '').trim();
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -314,8 +314,8 @@ document.addEventListener('click', (evt) => {
   const errorButton = document.querySelector('.error__button');
   const errorInner = document.querySelector('.error div');
 
-  isClosePopup(evt, successOutter, successInner, successButton, closeSuccessFormHandler);
-  isClosePopup(evt, errorOutter, errorInner, errorButton, closeErrorFormHandler);
+  closePopupMessageForm(evt, successOutter, successInner, successButton, closeSuccessFormHandler);
+  closePopupMessageForm(evt, errorOutter, errorInner, errorButton, closeErrorFormHandler);
 });
 
 function submitFormHandler(evt) {

@@ -1,5 +1,6 @@
 
-import {isEscapeKey, COMMENTS_STEP} from './utils.js';
+import {isEscapeKey} from './utils.js';
+import {COMMENTS_STEP} from './constants.js';
 
 let counter = 1;
 let commentsList = [];

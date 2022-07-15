@@ -1,5 +1,6 @@
 
-import {showAlert, URL} from './utils.js';
+import {showAlert} from './utils.js';
+import {URL} from './constants.js';
 
 function getData (onSuccess) {
   fetch(`${URL}/data`)

@@ -70,6 +70,21 @@ function closePopupMessageForm(evt, outer, inner, btn, func) {
   }
 }
 
+function debounce (callback, timeoutDelay) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+function getRandomPositiveInteger (a, b) {
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+}
+
 export {
   isEscapeKey,
   showAlert,
@@ -80,5 +95,7 @@ export {
   getHashTagAmount,
   getHashTagLength,
   validateDescription,
-  closePopupMessageForm
+  closePopupMessageForm,
+  getRandomPositiveInteger,
+  debounce
 };

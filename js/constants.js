@@ -6,3 +6,5 @@ export const MAX_COMMENT_LENGTH = 140;
 export const MAX_HASHTAGS_AMOUNT = 5;
 export const ZOOM_STEP = 25;
 export const REGEXP = /#[A-Za-zА-Яа-я]{1,19}/;
+export const RANDOM_PIC_AMOUNT = 10;
+export const RENDER_DELAY = 500;

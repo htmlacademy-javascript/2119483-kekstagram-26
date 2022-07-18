@@ -7,34 +7,32 @@ const picContainer = document.querySelector('.pictures');
 const picTemplate = document.querySelector('#picture');
 const picItem = picTemplate.content.querySelector('a');
 const imgFilters = document.querySelector('.img-filters');
-let imgData = [];
+let imagesData = [];
 
 getData(getElems);
 
 function getElems(data) {
-  imgData = data;
+  imagesData = data;
   imgFilters.classList.remove('img-filters--inactive');
   imgFilters.addEventListener('click', debounce(imgFilterHandler, RENDER_DELAY));
-  showFilteredElems(imgData);
+  showFilteredElems(imagesData);
 }
 
 picContainer.addEventListener('click', (evt) => {
-  if (evt.target.parentElement.getAttribute('class') === 'picture') {
+  if (evt.target.parentElement.classList.contains('picture')) {
     fullSizeDisplay(evt.target.parentElement.dataElem);
   }
 });
 
-function getRandonValuesArr(len) {
-  const arr = [];
-  while (arr.length < RANDOM_PIC_AMOUNT ){
+function getRandomValuesArr(len) {
+  const randomValues = [];
+  while (randomValues.length < RANDOM_PIC_AMOUNT ){
     const val = getRandomPositiveInteger(0, len - 1);
-    if (!arr.includes(val)){
-      arr.push(val);
-    } else {
-      continue;
+    if (!randomValues.includes(val)){
+      randomValues.push(val);
     }
   }
-  return arr;
+  return randomValues;
 }
 
 function imgFilterHandler(evt) {
@@ -44,22 +42,23 @@ function imgFilterHandler(evt) {
   document.querySelector('.img-filters__button.img-filters__button--active').classList.remove('img-filters__button--active');
   evt.target.classList.add('img-filters__button--active');
   let data = [];
-  const dataLength = imgData.length;
-  if (evt.target.id === 'filter-random'){
-    const randomValuesArr = getRandonValuesArr(dataLength);
-    data = randomValuesArr.map((n) => imgData[n]);
+  const id = evt.target.id;
+  const dataLength = imagesData.length;
+  if (id === 'filter-random'){
+    const randomValuesArr = getRandomValuesArr(dataLength);
+    data = randomValuesArr.map((n) => imagesData[n]);
   }
-  else if (evt.target.id === 'filter-discussed'){
-    data = imgData.slice().sort((a, b ) => b.comments.length - a.comments.length);
+  else if (id === 'filter-discussed'){
+    data = imagesData.slice().sort((a, b ) => b.comments.length - a.comments.length);
   }
   else {
-    data = imgData;
+    data = imagesData;
   }
   showFilteredElems(data);
 }
 
 function showFilteredElems(data) {
-  const picArr = picContainer.querySelectorAll('a.picture');
+  const picArr = picContainer.querySelectorAll('.picture');
   picArr.forEach((elem) => elem.remove());
   data.forEach((elem) => {
     const picElem = picItem.cloneNode(true);

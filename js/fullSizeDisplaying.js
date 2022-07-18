@@ -17,7 +17,7 @@ const socialItem = socialCommentTemplate.content.querySelector('li');
 
 commentsLoader.addEventListener('click', showRestComments);
 
-function fullSizeDisplay(elem) {
+function fullsizeDisplay(elem) {
   const {url, description, likes, comments} = elem;
   const bigPictureImg = bigPicture.querySelector('.big-picture__img');
   const likesCount = bigPicture.querySelector('.likes-count');
@@ -67,18 +67,18 @@ function showRestComments() {
   }
 }
 
-function unActivate() {
+function disableModal() {
   modalOpen.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
 }
 
 function fullSizeKeyDown(evt) {
   if (isEscapeKey(evt)) {
-    unActivate();
+    disableModal();
   }
 }
 
 window.addEventListener('keydown', fullSizeKeyDown);
-closeButton.addEventListener('click', unActivate);
+closeButton.addEventListener('click',  disableModal);
 
-export {fullSizeDisplay, showRestComments};
+export {fullsizeDisplay, showRestComments};

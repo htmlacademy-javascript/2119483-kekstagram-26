@@ -1,4 +1,4 @@
-import {fullSizeDisplay} from './fullSizeDisplaying.js';
+import {fullsizeDisplay} from './fullsizeDisplaying.js';
 import {getData} from './api.js';
 import {getRandomPositiveInteger, debounce} from './utils.js';
 import {RANDOM_PIC_AMOUNT, RENDER_DELAY} from './constants.js';
@@ -20,7 +20,7 @@ function getElems(data) {
 
 picContainer.addEventListener('click', (evt) => {
   if (evt.target.parentElement.classList.contains('picture')) {
-    fullSizeDisplay(evt.target.parentElement.dataElem);
+    fullsizeDisplay(evt.target.parentElement.dataElem);
   }
 });
 

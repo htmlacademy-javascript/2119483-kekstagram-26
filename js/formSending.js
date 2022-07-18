@@ -1,12 +1,13 @@
-import {isEscapeKey, validateHashTags, getRepeatHashTags, getHashTagAmount, getHashTagLength, validateDescription, closePopupMessageForm} from './utils.js';
+import {isEscapeKey, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
-import {MAX_COMMENT_LENGTH, MAX_HASHTAGS_AMOUNT, MIN_HASHTAG_LENGTH, ZOOM_STEP} from './constants.js';
+import {ZOOM_STEP} from './constants.js';
+import {pristine} from './validating.js';
 
 const imgUpload = document.querySelector('.img-upload');
 const imgUploadForm = imgUpload.querySelector('.img-upload__form');
 const imgFilterForm = imgUpload.querySelector('.img-upload__overlay');
-const upLoadFile = imgUpload.querySelector('#upload-file');
-const upLoadCancel = imgUpload.querySelector('#upload-cancel');
+const uploadFile = imgUpload.querySelector('#upload-file');
+const uploadCancel = imgUpload.querySelector('#upload-cancel');
 const textHashtags = imgUpload.querySelector('.text__hashtags');
 const textDescription = imgUpload.querySelector('.text__description');
 const imgUploadScale = document.querySelector('.img-upload__scale');
@@ -28,7 +29,7 @@ const errorSection = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
 const successSection = successTemplate.content.querySelector('section');
 
-function upLoadFileHandler () {
+function uploadFileHandler() {
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -40,13 +41,13 @@ function upLoadFileHandler () {
   imgUploadScale.addEventListener('click', scaleChangeHandler);
   effectsList.addEventListener('click', effectsListHandler);
   document.addEventListener('keydown', keyDownHandler);
-  upLoadCancel.addEventListener('click', upLoadCancelHandler);
+  uploadCancel.addEventListener('click', uploadCancelHandler);
 }
 
-function upLoadCancelHandler() {
+function uploadCancelHandler() {
   imgFilterForm.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  upLoadFile.value = '';
+  uploadFile.value = '';
   textHashtags.value = '';
   textDescription.value = '';
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -75,49 +76,10 @@ function keyDownHandler(evt) {
       closeErrorFormHandler();
     }
     else {
-      upLoadCancelHandler();
+      uploadCancelHandler();
     }
   }
 }
-
-const pristine = new Pristine(imgUploadForm, {
-  classTo: 'form-group',
-  errorClass: 'has-danger',
-  successClass: 'has-success',
-  errorTextParent: 'form-group',
-  errorTextTag: 'div',
-  errorTextClass: 'text-help'
-});
-
-pristine.addValidator(
-  textHashtags,
-  validateHashTags,
-  'Некорректный формат хештега'
-);
-
-pristine.addValidator(
-  textHashtags,
-  getRepeatHashTags,
-  'Не должно быть повторяющихся хештегов'
-);
-
-pristine.addValidator(
-  textHashtags,
-  getHashTagAmount,
-  `Количество хештегов не может быть больше ${MAX_HASHTAGS_AMOUNT}`
-);
-
-pristine.addValidator(
-  textHashtags,
-  getHashTagLength,
-  `Минимальная длина хештега ${MIN_HASHTAG_LENGTH} символа`
-);
-
-pristine.addValidator(
-  textDescription,
-  validateDescription,
-  `Длина строки до ${MAX_COMMENT_LENGTH} символов`
-);
 
 function scaleChangeHandler(evt) {
   let res = parseInt(scaleControlValue.value, 10);
@@ -156,19 +118,19 @@ noUiSlider.create(sliderElement, {
   step: 1,
   connect: 'lower',
   format: {
-    to: function (value) {
+    to: function(value) {
       if (Number.isInteger(value)) {
         return value.toFixed(0);
       }
       return value.toFixed(1);
     },
-    from: function (value) {
+    from: function(value) {
       return parseFloat(value);
     },
   }
 });
 
-function getEffectSettings (effectVal) {
+function getEffectSettings(effectVal) {
   const returnedObj = {
     effectName: `effects__preview${effectVal}`,
     sliderOptions: {},
@@ -247,7 +209,7 @@ function getEffectSettings (effectVal) {
   }
 }
 
-function updateImgStyle () {
+function updateImgStyle() {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
   if (effectName === 'effects__preview--none' || !effectName){
     sliderContainer.classList.add('hidden');
@@ -259,7 +221,7 @@ function updateImgStyle () {
   }
 }
 
-function effectsListHandler (evt) {
+function effectsListHandler(evt) {
   const selectedEffectClassName = evt.target.parentElement.querySelector('span').className;
   const effectClassName = selectedEffectClassName.replaceAll('effects__preview', '').trim();
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -278,12 +240,12 @@ sliderElement.noUiSlider.on('update', () => {
   }
 });
 
-function blockSubmitButton () {
+function blockSubmitButton() {
   submitButton.disabled = true;
   submitButton.textContent = 'Сохраняю...';
 }
 
-function unblockSubmitButton ()  {
+function unblockSubmitButton()  {
   submitButton.disabled = false;
   submitButton.textContent = 'Сохранить';
 }
@@ -303,7 +265,7 @@ function onSuccess() {
 
 function closeSuccessFormHandler() {
   document.body.removeChild(successSection);
-  upLoadCancelHandler();
+  uploadCancelHandler();
 }
 
 document.addEventListener('click', (evt) => {
@@ -332,6 +294,6 @@ function submitFormHandler(evt) {
   }
 }
 
-upLoadFile.addEventListener('change', upLoadFileHandler);
+uploadFile.addEventListener('change', uploadFileHandler);
 imgUploadForm.addEventListener('submit', submitFormHandler);
 

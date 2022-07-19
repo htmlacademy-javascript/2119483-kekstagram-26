@@ -15,8 +15,6 @@ const socialComments = bigPicture.querySelector('.social__comments');
 const socialCommentTemplate = document.querySelector('#socialComment');
 const socialItem = socialCommentTemplate.content.querySelector('li');
 
-commentsLoader.addEventListener('click', showRestComments);
-
 function fullsizeDisplay(elem) {
   const {url, description, likes, comments} = elem;
   const bigPictureImg = bigPicture.querySelector('.big-picture__img');
@@ -31,6 +29,9 @@ function fullsizeDisplay(elem) {
   modalOpen.classList.add('modal-open');
   socialComments.innerHTML = '';
   showComments(comments);
+  commentsLoader.addEventListener('click', showRestCommentsHandler);
+  window.addEventListener('keydown', fullsizeKeydownHandler);
+  closeButton.addEventListener('click',  disableModalHandler);
 }
 
 function createCommentsList(arr, item, root) {
@@ -52,11 +53,14 @@ function showComments(comments) {
   if (commentsList.length > COMMENTS_STEP) {
     commentsLoader.classList.remove('hidden');
   }
+  else {
+    commentsLoader.classList.add('hidden');
+  }
   createCommentsList(commentsList.slice(0, COMMENTS_STEP), socialItem, socialComments);
   commentsCountShown.textContent = commentsList.length < COMMENTS_STEP ? commentsList.length : COMMENTS_STEP;
 }
 
-function showRestComments() {
+function showRestCommentsHandler() {
   counter++;
   const restArray = commentsList.slice(0, COMMENTS_STEP * counter);
   socialComments.innerHTML = '';
@@ -67,18 +71,18 @@ function showRestComments() {
   }
 }
 
-function disableModal() {
+function disableModalHandler() {
   modalOpen.classList.remove('modal-open');
   bigPicture.classList.add('hidden');
+  commentsLoader.removeEventListener('click', showRestCommentsHandler);
+  window.removeEventListener('keydown', fullsizeKeydownHandler);
+  closeButton.removeEventListener('click',  disableModalHandler);
 }
 
-function fullSizeKeyDown(evt) {
+function fullsizeKeydownHandler(evt) {
   if (isEscapeKey(evt)) {
-    disableModal();
+    disableModalHandler();
   }
 }
 
-window.addEventListener('keydown', fullSizeKeyDown);
-closeButton.addEventListener('click',  disableModal);
-
-export {fullsizeDisplay, showRestComments};
+export {fullsizeDisplay};

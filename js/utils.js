@@ -1,11 +1,11 @@
 
 import {ALERT_SHOW_TIME,  MIN_HASHTAG_LENGTH,  MAX_COMMENT_LENGTH,  MAX_HASHTAGS_AMOUNT, REGEXP} from './constants.js';
 
-function isEscapeKey(evt) {
+export function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-function showAlert(message) {
+export function showAlert(message) {
   const alertContainer = document.createElement('div');
   alertContainer.textContent = message;
   alertContainer.classList.add('alert-message--active');
@@ -20,7 +20,7 @@ function checkHashTag(elem, regexp) {
   return regexp.test(elem) && elem.indexOf('#', 1) === -1;
 }
 
-function getHashTagLength(value) {
+export function getHashTagLength(value) {
   const arrHashTags = getHashTags(value);
   const isMinLength = arrHashTags.every((elem) => elem.length >= MIN_HASHTAG_LENGTH);
   return isMinLength;
@@ -30,7 +30,7 @@ function checkRepeatHashTags(v,i,a) {
   return a.lastIndexOf(v)!==i;
 }
 
-function validateDescription(value) {
+export function validateDescription(value) {
   return value.length <= MAX_COMMENT_LENGTH;
 }
 
@@ -40,24 +40,24 @@ function getHashTags(value) {
   return hashTags;
 }
 
-function validateHashTags(value) {
+export function validateHashTags(value) {
   const arrHashTags = getHashTags(value);
   const isMatchRegExp = arrHashTags.every((elem) => checkHashTag(elem, REGEXP));
   return isMatchRegExp;
 }
 
-function getRepeatHashTags(value) {
+export function getRepeatHashTags(value) {
   const arrHashTags = getHashTags(value);
   const isGetRepeatHashTag = arrHashTags.some(checkRepeatHashTags);
   return !isGetRepeatHashTag;
 }
 
-function getHashTagAmount(value){
+export function getHashTagAmount(value){
   const arrHashTags = getHashTags(value);
   return arrHashTags.length <= MAX_HASHTAGS_AMOUNT;
 }
 
-function closePopupMessageForm(evt, outer, inner, btn, func) {
+export function closePopupMessageForm(evt, outer, inner, btn, func) {
   if (outer) {
     const isClickInside = inner.contains(evt.target);
     const isClickButton = btn.contains(evt.target);
@@ -70,15 +70,19 @@ function closePopupMessageForm(evt, outer, inner, btn, func) {
   }
 }
 
-export {
-  isEscapeKey,
-  showAlert,
-  checkHashTag,
-  checkRepeatHashTags,
-  validateHashTags,
-  getRepeatHashTags,
-  getHashTagAmount,
-  getHashTagLength,
-  validateDescription,
-  closePopupMessageForm
-};
+export function debounce(callback, timeoutDelay) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+export function getRandomPositiveInteger(a, b) {
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+}
+
+

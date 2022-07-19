@@ -2,7 +2,7 @@
 import {showAlert} from './utils.js';
 import {URL} from './constants.js';
 
-function getData (onSuccess) {
+function getData(onSuccess) {
   fetch(`${URL}/data`)
     .then((response) => {
       if (response.ok) {
@@ -15,7 +15,7 @@ function getData (onSuccess) {
     .catch((error) => showAlert(error));
 }
 
-const sendData = (onSuccess, onFail, body, onFinal) => {
+function sendData(onSuccess, onFail, body, onFinal) {
   fetch(
     URL,
     {
@@ -32,6 +32,6 @@ const sendData = (onSuccess, onFail, body, onFinal) => {
     .then((data) => onSuccess(data))
     .catch((error) => onFail(error))
     .finally(onFinal);
-};
+}
 
 export {getData, sendData};

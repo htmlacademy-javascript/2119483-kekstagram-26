@@ -1,6 +1,6 @@
 import {isEscapeKey, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
-import {ZOOM_STEP} from './constants.js';
+import {ZOOM_STEP, FILE_TYPES} from './constants.js';
 import {pristine} from './validating.js';
 
 const imgUpload = document.querySelector('.img-upload');
@@ -13,23 +13,31 @@ const textDescription = imgUpload.querySelector('.text__description');
 const imgUploadScale = document.querySelector('.img-upload__scale');
 const scaleControlValue = imgFilterForm.querySelector('.scale__control--value');
 const imgUploadPreview = imgFilterForm.querySelector('.img-upload__preview img');
-imgUploadPreview.setAttribute('style', '');
-imgUploadPreview.style.cssText = '';
 const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level');
 const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
 const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
 const submitButton = imgUpload.querySelector('.img-upload__submit');
 const effectNone = imgUpload.querySelector('#effect-none');
-let effectSettings = undefined;
-let scaleImg = 1;
-
 const errorTemplate = document.querySelector('#error');
 const errorSection = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
 const successSection = successTemplate.content.querySelector('section');
+let effectSettings = undefined;
+let scaleImg = 1;
+
+imgUploadPreview.setAttribute('style', '');
+imgUploadPreview.style.cssText = '';
+
+uploadFile.addEventListener('change', uploadFileHandler);
 
 function uploadFileHandler() {
+  const file = uploadFile.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
+  if (matches) {
+    imgUploadPreview.src = URL.createObjectURL(file);
+  }
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -40,8 +48,10 @@ function uploadFileHandler() {
   scaleControlValue.setAttribute('value', '100%');
   imgUploadScale.addEventListener('click', scaleChangeHandler);
   effectsList.addEventListener('click', effectsListHandler);
-  document.addEventListener('keydown', keyDownHandler);
+  document.addEventListener('keydown', keydownHandler);
   uploadCancel.addEventListener('click', uploadCancelHandler);
+  document.addEventListener('click', closeModalOuterHandler);
+  imgUploadForm.addEventListener('submit', submitFormHandler);
 }
 
 function uploadCancelHandler() {
@@ -60,10 +70,13 @@ function uploadCancelHandler() {
   sliderContainer.classList.add('hidden');
   imgUploadScale.removeEventListener('click', scaleChangeHandler);
   effectsList.removeEventListener('click', effectsListHandler);
-  document.removeEventListener('keydown', keyDownHandler);
+  document.removeEventListener('keydown', keydownHandler);
+  document.removeEventListener('click', closeModalOuterHandler);
+  uploadCancel.removeEventListener('click', uploadCancelHandler);
+  imgUploadForm.removeEventListener('submit', submitFormHandler);
 }
 
-function keyDownHandler(evt) {
+function keydownHandler(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     if (document.activeElement === textHashtags || document.activeElement === textDescription) {
@@ -268,7 +281,7 @@ function closeSuccessFormHandler() {
   uploadCancelHandler();
 }
 
-document.addEventListener('click', (evt) => {
+function closeModalOuterHandler(evt) {
   const successOutter = document.querySelector('.success');
   const successButton = document.querySelector('.success__button');
   const successInner = document.querySelector('.success div');
@@ -278,7 +291,7 @@ document.addEventListener('click', (evt) => {
 
   closePopupMessageForm(evt, successOutter, successInner, successButton, closeSuccessFormHandler);
   closePopupMessageForm(evt, errorOutter, errorInner, errorButton, closeErrorFormHandler);
-});
+}
 
 function submitFormHandler(evt) {
   evt.preventDefault();
@@ -294,6 +307,4 @@ function submitFormHandler(evt) {
   }
 }
 
-uploadFile.addEventListener('change', uploadFileHandler);
-imgUploadForm.addEventListener('submit', submitFormHandler);
 

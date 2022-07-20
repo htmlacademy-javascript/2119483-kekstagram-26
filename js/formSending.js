@@ -1,7 +1,7 @@
 import {isEscapeKey, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
 import {ZOOM_STEP, FILE_TYPES} from './constants.js';
-import {pristine} from './validating.js';
+import {pristineTextHashTag, pristineTextDescription} from './validating.js';
 
 const imgUpload = document.querySelector('.img-upload');
 const imgUploadForm = imgUpload.querySelector('.img-upload__form');
@@ -17,7 +17,7 @@ const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level')
 const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
 const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
-const submitButton = imgUpload.querySelector('.img-upload__submit');
+const submitButton = imgUpload.querySelector('#upload-submit');
 const effectNone = imgUpload.querySelector('#effect-none');
 const errorTemplate = document.querySelector('#error');
 const errorSection = errorTemplate.content.querySelector('section');
@@ -65,7 +65,7 @@ function uploadCancelHandler() {
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
   scaleImg = 1;
-  effectSettings = {};
+  effectSettings = '';
   effectNone.checked = true;
   sliderContainer.classList.add('hidden');
   imgUploadScale.removeEventListener('click', scaleChangeHandler);
@@ -224,7 +224,7 @@ function getEffectSettings(effectVal) {
 
 function updateImgStyle() {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
-  if (effectName === 'effects__preview--none' || !effectName){
+  if (effectName === 'effects__preview--none' ){
     sliderContainer.classList.add('hidden');
     imgUploadPreview.style.cssText = `transform: scale(${scaleImg});`;
   } else {
@@ -295,14 +295,15 @@ function closeModalOuterHandler(evt) {
 
 function submitFormHandler(evt) {
   evt.preventDefault();
-  const isValid = pristine.validate();
-  if (isValid) {
+  const isValidHashTag = pristineTextHashTag.validate();
+  const isValidTextDescription = pristineTextDescription.validate();
+  if (isValidHashTag && isValidTextDescription) {
     blockSubmitButton();
     sendData(
       onSuccess,
       onFail,
       new FormData(evt.target),
-      unblockSubmitButton()
+      unblockSubmitButton
     );
   }
 }

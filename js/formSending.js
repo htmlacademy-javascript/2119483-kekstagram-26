@@ -23,7 +23,7 @@ const errorTemplate = document.querySelector('#error');
 const errorSection = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
 const successSection = successTemplate.content.querySelector('section');
-let effectSettings = undefined;
+let effectSettings = getEffectSettings('--none');
 let scaleImg = 1;
 
 imgUploadPreview.setAttribute('style', '');
@@ -65,7 +65,7 @@ function uploadCancelHandler() {
   imgUploadPreview.style.cssText = 'transform: scale(1.0)';
   scaleControlValue.value = '100%';
   scaleImg = 1;
-  effectSettings = '';
+  effectSettings = getEffectSettings('--none');
   effectNone.checked = true;
   sliderContainer.classList.add('hidden');
   imgUploadScale.removeEventListener('click', scaleChangeHandler);
@@ -114,12 +114,7 @@ function scaleChangeHandler(evt) {
   scaleControlValue.value = `${res}%`;
   scaleControlValue.setAttribute('value', `${res}%`);
   scaleImg = res/100;
-  if (effectSettings){
-    updateImgStyle();
-  } else {
-    effectSettings = getEffectSettings('--none');
-    updateImgStyle();
-  }
+  updateImgStyle();
 }
 
 noUiSlider.create(sliderElement, {
@@ -224,7 +219,7 @@ function getEffectSettings(effectVal) {
 
 function updateImgStyle() {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
-  if (effectName === 'effects__preview--none' ){
+  if (effectName === 'effects__preview--none'){
     sliderContainer.classList.add('hidden');
     imgUploadPreview.style.cssText = `transform: scale(${scaleImg});`;
   } else {

@@ -1,4 +1,4 @@
-import {fullsizeDisplay} from './fullsizeDisplaying.js';
+import {fullsizeDisplay} from './full-size-displaying.js';
 import {getData} from './api.js';
 import {getRandomPositiveInteger, debounce} from './utils.js';
 import {RANDOM_PIC_AMOUNT, RENDER_DELAY} from './constants.js';
@@ -24,7 +24,7 @@ picContainer.addEventListener('click', (evt) => {
   }
 });
 
-function getRandomValuesArr(len) {
+function getRandomValueItems(len) {
   const randomValues = [];
   while (randomValues.length < RANDOM_PIC_AMOUNT ){
     const val = getRandomPositiveInteger(0, len - 1);
@@ -45,8 +45,8 @@ function imgFilterHandler(evt) {
   const id = evt.target.id;
   const dataLength = imagesData.length;
   if (id === 'filter-random'){
-    const randomValuesArr = getRandomValuesArr(dataLength);
-    data = randomValuesArr.map((n) => imagesData[n]);
+    const randomValueItems = getRandomValueItems(dataLength);
+    data = randomValueItems.map((n) => imagesData[n]);
   }
   else if (id === 'filter-discussed'){
     data = imagesData.slice().sort((a, b ) => b.comments.length - a.comments.length);
@@ -58,8 +58,9 @@ function imgFilterHandler(evt) {
 }
 
 function showFilteredElems(data) {
-  const picArr = picContainer.querySelectorAll('.picture');
-  picArr.forEach((elem) => elem.remove());
+  const picItems = picContainer.querySelectorAll('.picture');
+  const fragment = document.createDocumentFragment();
+  picItems.forEach((elem) => elem.remove());
   data.forEach((elem) => {
     const picElem = picItem.cloneNode(true);
     picElem.querySelector('.picture__img').src= elem.url;
@@ -67,8 +68,9 @@ function showFilteredElems(data) {
     picElem.querySelector('.picture__likes').textContent = elem.likes;
     picElem.querySelector('.picture__img').alt = elem.description;
     picElem.dataElem = elem;
-    picContainer.appendChild(picElem);
+    fragment.appendChild(picElem);
   });
+  picContainer.appendChild(fragment);
 }
 
 

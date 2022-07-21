@@ -1,5 +1,5 @@
-import {validateHashTags, getRepeatHashTags, getHashTagAmount, getHashTagLength, validateDescription} from './utils.js';
-import {MAX_COMMENT_LENGTH, MAX_HASHTAGS_AMOUNT, MIN_HASHTAG_LENGTH} from './constants.js';
+import {validateHashTags, getRepeatHashTags, getHashTagAmount, getHashTagMinLength, getHashTagMaxLength, validateDescription} from './utils.js';
+import {MAX_COMMENT_LENGTH, MAX_HASHTAGS_AMOUNT, MAX_HASHTAG_LENGTH, MIN_HASHTAG_LENGTH} from './constants.js';
 
 const imgUpload = document.querySelector('.img-upload');
 const imgUploadForm = imgUpload.querySelector('.img-upload__form');
@@ -44,8 +44,14 @@ pristineTextHashTag.addValidator(
 
 pristineTextHashTag.addValidator(
   textHashtags,
-  getHashTagLength,
+  getHashTagMinLength,
   `Минимальная длина хештега ${MIN_HASHTAG_LENGTH} символа`
+);
+
+pristineTextHashTag.addValidator(
+  textHashtags,
+  getHashTagMaxLength,
+  `Максимальная длина хештега ${MAX_HASHTAG_LENGTH} символов включая #`
 );
 
 pristineTextDescription.addValidator(

@@ -1,6 +1,6 @@
 import {isEscapeKey, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
-import {ZOOM_STEP, FILE_TYPES} from './constants.js';
+import {ZOOM_STEP, FILE_TYPES, ZOOM_MAX, ZOOM_MIN} from './constants.js';
 import {pristineTextHashTag, pristineTextDescription} from './validating.js';
 
 const imgUpload = document.querySelector('.img-upload');
@@ -14,7 +14,7 @@ const imgUploadScale = document.querySelector('.img-upload__scale');
 const scaleControlValue = imgFilterForm.querySelector('.scale__control--value');
 const imgUploadPreview = imgFilterForm.querySelector('.img-upload__preview img');
 const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level');
-const sliderElement = imgFilterForm.querySelector('.effect-level__slider');
+const sliderElem = imgFilterForm.querySelector('.effect-level__slider');
 const effectsList = imgFilterForm.querySelector('.effects__list');
 const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
 const submitButton = imgUpload.querySelector('#upload-submit');
@@ -23,6 +23,7 @@ const errorTemplate = document.querySelector('#error');
 const errorSection = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
 const successSection = successTemplate.content.querySelector('section');
+const items = imgUpload.querySelectorAll('.effects__preview');
 let effectSettings = getEffectSettings('--none');
 let scaleImg = 1;
 
@@ -31,13 +32,29 @@ imgUploadPreview.style.cssText = '';
 
 uploadFile.addEventListener('change', uploadFileHandler);
 
-function uploadFileHandler() {
+function uploadNewFile() {
   const file = uploadFile.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
   if (matches) {
     imgUploadPreview.src = URL.createObjectURL(file);
+    for (let i = 0; i < items.length; i++){
+      items[i].classList.remove('effects__preview');
+      items[i].classList.add('effects__upload');
+      items[i].setAttribute('style', `background-image: url(${URL.createObjectURL(file)});`);
+    }
   }
+}
+
+function getOldItemsStatus() {
+  items.forEach((item) => {
+    item.classList.add('effects__preview');
+    item.classList.remove('effects__upload');
+  });
+}
+
+function uploadFileHandler() {
+  uploadNewFile();
   imgFilterForm.classList.remove('hidden');
   document.body.classList.add('modal-open');
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
@@ -55,6 +72,7 @@ function uploadFileHandler() {
 }
 
 function uploadCancelHandler() {
+  getOldItemsStatus();
   imgFilterForm.classList.add('hidden');
   document.body.classList.remove('modal-open');
   uploadFile.value = '';
@@ -98,14 +116,14 @@ function scaleChangeHandler(evt) {
   let res = parseInt(scaleControlValue.value, 10);
   if (evt.target.className.includes('smaller')){
     if (res <= ZOOM_STEP ){
-      res = 0;
+      res = ZOOM_MIN;
     }
     else {
       res -= ZOOM_STEP;
     }
   } else if (evt.target.className.includes('bigger')){
-    if ((res + ZOOM_STEP) >= 100 ){
-      res = 100;
+    if ((res + ZOOM_STEP) >= ZOOM_MAX ){
+      res = ZOOM_MAX;
     }
     else {
       res += ZOOM_STEP;
@@ -117,7 +135,7 @@ function scaleChangeHandler(evt) {
   updateImgStyle();
 }
 
-noUiSlider.create(sliderElement, {
+noUiSlider.create(sliderElem, {
   range: {
     min: 0,
     max: 100,
@@ -231,16 +249,16 @@ function updateImgStyle() {
 
 function effectsListHandler(evt) {
   const selectedEffectClassName = evt.target.parentElement.querySelector('span').className;
-  const effectClassName = selectedEffectClassName.replaceAll('effects__preview', '').trim();
+  const effectClassName = selectedEffectClassName.replace('effects__upload', '').replace('effects__preview', '').trim();
   imgUploadPreview.classList.remove(...imgUploadPreview.classList);
   imgUploadPreview.style.cssText = '';
   effectSettings = getEffectSettings(effectClassName);
-  sliderElement.noUiSlider.updateOptions(effectSettings.sliderOptions);
+  sliderElem.noUiSlider.updateOptions(effectSettings.sliderOptions);
   updateImgStyle();
 }
 
-sliderElement.noUiSlider.on('update', () => {
-  const sliderVal = sliderElement.noUiSlider.get();
+sliderElem.noUiSlider.on('update', () => {
+  const sliderVal = sliderElem.noUiSlider.get();
   if (effectSettings){
     effectSettings.filterIntensity = sliderVal;
     updateImgStyle();
@@ -248,14 +266,8 @@ sliderElement.noUiSlider.on('update', () => {
   }
 });
 
-function blockSubmitButton() {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Сохраняю...';
-}
-
 function unblockSubmitButton()  {
   submitButton.disabled = false;
-  submitButton.textContent = 'Сохранить';
 }
 
 function onFail() {
@@ -293,7 +305,7 @@ function submitFormHandler(evt) {
   const isValidHashTag = pristineTextHashTag.validate();
   const isValidTextDescription = pristineTextDescription.validate();
   if (isValidHashTag && isValidTextDescription) {
-    blockSubmitButton();
+    submitButton.disabled = true;
     sendData(
       onSuccess,
       onFail,

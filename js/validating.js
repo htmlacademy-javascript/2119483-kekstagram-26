@@ -61,3 +61,4 @@ pristineTextDescription.addValidator(
 );
 
 export {pristineTextHashTag, pristineTextDescription};
+

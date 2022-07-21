@@ -81,3 +81,4 @@ function fullsizeKeydownHandler(evt) {
 }
 
 export {fullsizeDisplay};
+

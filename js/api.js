@@ -35,3 +35,4 @@ function sendData(onSuccess, onFail, body, onFinal) {
 }
 
 export {getData, sendData};
+

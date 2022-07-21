@@ -72,5 +72,3 @@ function showFilteredElems(data) {
   });
   picContainer.appendChild(fragment);
 }
-
-

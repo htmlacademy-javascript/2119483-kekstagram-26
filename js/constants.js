@@ -12,4 +12,3 @@ export const REGEXP = /#[A-Za-zА-Яа-яЁё1-9]{1,19}/;
 export const RANDOM_PIC_AMOUNT = 10;
 export const RENDER_DELAY = 500;
 export const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-

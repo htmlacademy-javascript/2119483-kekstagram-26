@@ -3,7 +3,7 @@ import {isEscapeKey} from './utils.js';
 import {COMMENTS_STEP} from './constants.js';
 
 let counter = 1;
-let commentsList = [];
+let enqueuedComments = [];
 
 const bigPicture = document.querySelector('.big-picture');
 const modalOpen = document.querySelector('body');
@@ -34,39 +34,34 @@ function fullsizeDisplay(elem) {
   closeButton.addEventListener('click',  disableModalHandler);
 }
 
-function createCommentsList(arr, item, root) {
-  for (let i = 0; i < arr.length; i++) {
+function createCommentsList(items, item, root) {
+  for (let i = 0; i < items.length; i++) {
     const commentElem = item.cloneNode(true);
     const socialPic = commentElem.querySelector('.social__picture');
-    socialPic.src = arr[i].avatar;
-    socialPic.alt = arr[i].name;
+    socialPic.src = items[i].avatar;
+    socialPic.alt = items[i].name;
     const socialText = commentElem.querySelector('.social__text');
-    socialText.textContent = arr[i].message;
+    socialText.textContent = items[i].message;
     root.appendChild(commentElem);
   }
 }
 
 function showComments(comments) {
   counter = 1;
-  commentsList = comments;
+  enqueuedComments = comments;
   socialComments.innerHTML = '';
-  if (commentsList.length > COMMENTS_STEP) {
-    commentsLoader.classList.remove('hidden');
-  }
-  else {
-    commentsLoader.classList.add('hidden');
-  }
-  createCommentsList(commentsList.slice(0, COMMENTS_STEP), socialItem, socialComments);
-  commentsCountShown.textContent = commentsList.length < COMMENTS_STEP ? commentsList.length : COMMENTS_STEP;
+  commentsLoader.classList.toggle('hidden', enqueuedComments.length <= COMMENTS_STEP);
+  createCommentsList(enqueuedComments.slice(0, COMMENTS_STEP), socialItem, socialComments);
+  commentsCountShown.textContent = enqueuedComments.length < COMMENTS_STEP ? enqueuedComments.length : COMMENTS_STEP;
 }
 
 function showRestCommentsHandler() {
   counter++;
-  const restArray = commentsList.slice(0, COMMENTS_STEP * counter);
+  const restComments = enqueuedComments.slice(0, COMMENTS_STEP * counter);
   socialComments.innerHTML = '';
-  createCommentsList(restArray, socialItem, socialComments);
-  commentsCountShown.textContent = restArray.length;
-  if (restArray.length === commentsList.length){
+  createCommentsList(restComments, socialItem, socialComments);
+  commentsCountShown.textContent = restComments.length;
+  if (restComments.length === enqueuedComments.length){
     commentsLoader.classList.add('hidden');
   }
 }
@@ -86,3 +81,4 @@ function fullsizeKeydownHandler(evt) {
 }
 
 export {fullsizeDisplay};
+

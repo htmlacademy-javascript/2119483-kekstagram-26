@@ -631,15 +631,15 @@ main {
   border-radius: 5px;
 }
 
-.effects__preview:last-of-type {
+.effects__preview:last-of-type, .effects__upload:last-of-type {
   margin-right: 0;
 }
 
-.effects__radio:checked + .effects__label .effects__preview {
+.effects__radio:checked + .effects__label .effects__preview, .effects__radio:checked + .effects__label .effects__upload {
   border: 5px solid #ffe753;
 }
 
-.effects__radio:focus + .effects__label .effects__preview {
+.effects__radio:focus + .effects__label .effects__preview,  .effects__radio:focus + .effects__label .effects__upload{
   outline: auto 5px highlight;
 }
 
@@ -1419,6 +1419,25 @@ main {
   font-size: 30px; 
   text-align: center; 
   background-color: red;
+}
+
+.effects__upload {
+  display: block;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 5px;
+
+  overflow: hidden;
+
+  font-size: 0;
+
+  background-color: #314359;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto;
+
+  border: solid 5px transparent;
+  border-radius: 5px;
 }
 
 

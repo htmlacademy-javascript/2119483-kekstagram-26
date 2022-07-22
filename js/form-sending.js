@@ -23,7 +23,7 @@ const errorTemplate = document.querySelector('#error');
 const errorSection = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
 const successSection = successTemplate.content.querySelector('section');
-const items = imgUpload.querySelectorAll('.effects__preview');
+const effectItems = imgUpload.querySelectorAll('.effects__preview');
 let effectSettings = getEffectSettings('--none');
 let scaleImg = 1;
 
@@ -36,18 +36,19 @@ function uploadNewFile() {
   const file = uploadFile.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
+  const objURL = URL.createObjectURL(file);
   if (matches) {
-    imgUploadPreview.src = URL.createObjectURL(file);
-    for (let i = 0; i < items.length; i++){
-      items[i].classList.remove('effects__preview');
-      items[i].classList.add('effects__upload');
-      items[i].setAttribute('style', `background-image: url(${URL.createObjectURL(file)});`);
+    imgUploadPreview.src = objURL;
+    for (let i = 0; i < effectItems.length; i++){
+      effectItems[i].classList.remove('effects__preview');
+      effectItems[i].classList.add('effects__upload');
+      effectItems[i].style.backgroundImage = `url(${objURL})`;
     }
   }
 }
 
 function getOldItemsStatus() {
-  items.forEach((item) => {
+  effectItems.forEach((item) => {
     item.classList.add('effects__preview');
     item.classList.remove('effects__upload');
   });

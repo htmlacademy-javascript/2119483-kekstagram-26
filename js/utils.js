@@ -67,12 +67,6 @@ export function closePopupMessageForm(evt, outer, inner, btn, func) {
   if (outer) {
     const isClickInside = inner.contains(evt.target);
     const isClickButton = btn.contains(evt.target);
-    /*if (isClickButton) {
-      func();
-    }
-    else if (!isClickInside && !isClickButton){
-      func();
-    }*/
     if (isClickButton || !isClickInside){
       func();
     }

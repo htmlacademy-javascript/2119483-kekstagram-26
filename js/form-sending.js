@@ -3,52 +3,52 @@ import {sendData} from './api.js';
 import {ZOOM_STEP, FILE_TYPES, ZOOM_MAX, ZOOM_MIN} from './constants.js';
 import {pristineTextHashTag, pristineTextDescription} from './validating.js';
 
-const imgUpload = document.querySelector('.img-upload');
-const imgUploadForm = imgUpload.querySelector('.img-upload__form');
-const imgFilterForm = imgUpload.querySelector('.img-upload__overlay');
-const uploadFile = imgUpload.querySelector('#upload-file');
-const uploadCancel = imgUpload.querySelector('#upload-cancel');
-const textHashtags = imgUpload.querySelector('.text__hashtags');
-const textDescription = imgUpload.querySelector('.text__description');
-const imgUploadScale = document.querySelector('.img-upload__scale');
-const scaleControlValue = imgFilterForm.querySelector('.scale__control--value');
-const imgUploadPreview = imgFilterForm.querySelector('.img-upload__preview img');
-const sliderContainer = imgFilterForm.querySelector('.img-upload__effect-level');
-const sliderElem = imgFilterForm.querySelector('.effect-level__slider');
-const effectsList = imgFilterForm.querySelector('.effects__list');
-const effectLevelValue = imgFilterForm.querySelector('.effect-level__value');
-const submitButton = imgUpload.querySelector('#upload-submit');
-const effectNone = imgUpload.querySelector('#effect-none');
+const containerElement = document.querySelector('.img-upload');
+const formElement = containerElement.querySelector('.img-upload__form');
+const overlayElement = containerElement.querySelector('.img-upload__overlay');
+const fileInputElement = containerElement.querySelector('#upload-file');
+const cancelButtonElement = containerElement.querySelector('#upload-cancel');
+const hashtagsInputElement = containerElement.querySelector('.text__hashtags');
+const descriptionInputElement = containerElement.querySelector('.text__description');
+const scaleContainerElement = document.querySelector('.img-upload__scale');
+const scaleValueElement = overlayElement.querySelector('.scale__control--value');
+const previewContainerElement = overlayElement.querySelector('.img-upload__preview img');
+const sliderContainerElement = overlayElement.querySelector('.img-upload__effect-level');
+const sliderElement = overlayElement.querySelector('.effect-level__slider');
+const effectsListElement = overlayElement.querySelector('.effects__list');
+const effectValueElement = overlayElement.querySelector('.effect-level__value');
+const submitButtonElement = containerElement.querySelector('#upload-submit');
+const effectNoneElement = containerElement.querySelector('#effect-none');
 const errorTemplate = document.querySelector('#error');
-const errorSection = errorTemplate.content.querySelector('section');
+const errorSectionElement = errorTemplate.content.querySelector('section');
 const successTemplate = document.querySelector('#success');
-const successSection = successTemplate.content.querySelector('section');
-const effectItems = imgUpload.querySelectorAll('.effects__preview');
+const successSectionElement = successTemplate.content.querySelector('section');
+const effectPreviewElements = containerElement.querySelectorAll('.effects__preview');
 let effectSettings = getEffectSettings('--none');
 let scaleImg = 1;
 
-imgUploadPreview.setAttribute('style', '');
-imgUploadPreview.style.cssText = '';
+previewContainerElement.setAttribute('style', '');
+previewContainerElement.style.cssText = '';
 
-uploadFile.addEventListener('change', uploadFileHandler);
+fileInputElement.addEventListener('change', uploadFileHandler);
 
 function uploadNewFile() {
-  const file = uploadFile.files[0];
+  const file = fileInputElement.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
   const objURL = URL.createObjectURL(file);
   if (matches) {
-    imgUploadPreview.src = objURL;
-    for (let i = 0; i < effectItems.length; i++){
-      effectItems[i].classList.remove('effects__preview');
-      effectItems[i].classList.add('effects__upload');
-      effectItems[i].style.backgroundImage = `url(${objURL})`;
+    previewContainerElement.src = objURL;
+    for (let i = 0; i < effectPreviewElements.length; i++){
+      effectPreviewElements[i].classList.remove('effects__preview');
+      effectPreviewElements[i].classList.add('effects__upload');
+      effectPreviewElements[i].style.backgroundImage = `url(${objURL})`;
     }
   }
 }
 
 function getOldItemsStatus() {
-  effectItems.forEach((item) => {
+  effectPreviewElements.forEach((item) => {
     item.classList.add('effects__preview');
     item.classList.remove('effects__upload');
   });
@@ -56,55 +56,55 @@ function getOldItemsStatus() {
 
 function uploadFileHandler() {
   uploadNewFile();
-  imgFilterForm.classList.remove('hidden');
+  overlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
-  imgUploadPreview.classList.add('effects_preview--none');
-  sliderContainer.classList.add('hidden');
-  imgUploadPreview.style.cssText = 'transform: scale(1.0)';
-  scaleControlValue.value = '100%';
-  scaleControlValue.setAttribute('value', '100%');
-  imgUploadScale.addEventListener('click', scaleChangeHandler);
-  effectsList.addEventListener('click', effectsListHandler);
+  previewContainerElement.classList.remove(...previewContainerElement.classList);
+  previewContainerElement.classList.add('effects_preview--none');
+  sliderContainerElement.classList.add('hidden');
+  previewContainerElement.style.cssText = 'transform: scale(1.0)';
+  scaleValueElement.value = '100%';
+  scaleValueElement.setAttribute('value', '100%');
+  scaleContainerElement.addEventListener('click', scaleChangeHandler);
+  effectsListElement.addEventListener('click', effectsListHandler);
   document.addEventListener('keydown', keydownHandler);
-  uploadCancel.addEventListener('click', uploadCancelHandler);
+  cancelButtonElement.addEventListener('click', uploadCancelHandler);
   document.addEventListener('click', closeModalOuterHandler);
-  imgUploadForm.addEventListener('submit', submitFormHandler);
+  formElement.addEventListener('submit', submitFormHandler);
 }
 
 function uploadCancelHandler() {
   getOldItemsStatus();
-  imgFilterForm.classList.add('hidden');
+  overlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  uploadFile.value = '';
-  textHashtags.value = '';
-  textDescription.value = '';
-  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
-  imgUploadPreview.classList.add('effects_preview--none');
-  imgUploadPreview.style.cssText = 'transform: scale(1.0)';
-  scaleControlValue.value = '100%';
+  fileInputElement.value = '';
+  hashtagsInputElement.value = '';
+  descriptionInputElement.value = '';
+  previewContainerElement.classList.remove(...previewContainerElement.classList);
+  previewContainerElement.classList.add('effects_preview--none');
+  previewContainerElement.style.cssText = 'transform: scale(1.0)';
+  scaleValueElement.value = '100%';
   scaleImg = 1;
   effectSettings = getEffectSettings('--none');
-  effectNone.checked = true;
-  sliderContainer.classList.add('hidden');
-  imgUploadScale.removeEventListener('click', scaleChangeHandler);
-  effectsList.removeEventListener('click', effectsListHandler);
+  effectNoneElement.checked = true;
+  sliderContainerElement.classList.add('hidden');
+  scaleContainerElement.removeEventListener('click', scaleChangeHandler);
+  effectsListElement.removeEventListener('click', effectsListHandler);
   document.removeEventListener('keydown', keydownHandler);
   document.removeEventListener('click', closeModalOuterHandler);
-  uploadCancel.removeEventListener('click', uploadCancelHandler);
-  imgUploadForm.removeEventListener('submit', submitFormHandler);
+  cancelButtonElement.removeEventListener('click', uploadCancelHandler);
+  formElement.removeEventListener('submit', submitFormHandler);
 }
 
 function keydownHandler(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    if (document.activeElement === textHashtags || document.activeElement === textDescription) {
+    if (document.activeElement === hashtagsInputElement || document.activeElement === descriptionInputElement) {
       return false;
     }
-    else if (successSection.parentElement) {
+    else if (successSectionElement.parentElement) {
       closeSuccessFormHandler();
     }
-    else if (errorSection.parentElement) {
+    else if (errorSectionElement.parentElement) {
       closeErrorFormHandler();
     }
     else {
@@ -114,7 +114,7 @@ function keydownHandler(evt) {
 }
 
 function scaleChangeHandler(evt) {
-  let res = parseInt(scaleControlValue.value, 10);
+  let res = parseInt(scaleValueElement.value, 10);
   if (evt.target.className.includes('smaller')){
     if (res <= ZOOM_STEP ){
       res = ZOOM_MIN;
@@ -130,13 +130,13 @@ function scaleChangeHandler(evt) {
       res += ZOOM_STEP;
     }
   }
-  scaleControlValue.value = `${res}%`;
-  scaleControlValue.setAttribute('value', `${res}%`);
+  scaleValueElement.value = `${res}%`;
+  scaleValueElement.setAttribute('value', `${res}%`);
   scaleImg = res/100;
   updateImgStyle();
 }
 
-noUiSlider.create(sliderElem, {
+noUiSlider.create(sliderElement, {
   range: {
     min: 0,
     max: 100,
@@ -239,53 +239,53 @@ function getEffectSettings(effectVal) {
 function updateImgStyle() {
   const {effectName, filterIntensity,  filterType, filterMeasure} = effectSettings;
   if (effectName === 'effects__preview--none'){
-    sliderContainer.classList.add('hidden');
-    imgUploadPreview.style.cssText = `transform: scale(${scaleImg});`;
+    sliderContainerElement.classList.add('hidden');
+    previewContainerElement.style.cssText = `transform: scale(${scaleImg});`;
   } else {
-    sliderContainer.classList.remove('hidden');
-    imgUploadPreview.classList.add(effectName);
-    imgUploadPreview.style.cssText = `filter: ${filterType}(${filterIntensity}${filterMeasure}); transform: scale(${scaleImg});`;
+    sliderContainerElement.classList.remove('hidden');
+    previewContainerElement.classList.add(effectName);
+    previewContainerElement.style.cssText = `filter: ${filterType}(${filterIntensity}${filterMeasure}); transform: scale(${scaleImg});`;
   }
 }
 
 function effectsListHandler(evt) {
   const selectedEffectClassName = evt.target.parentElement.querySelector('span').className;
   const effectClassName = selectedEffectClassName.replace('effects__upload', '').replace('effects__preview', '').trim();
-  imgUploadPreview.classList.remove(...imgUploadPreview.classList);
-  imgUploadPreview.style.cssText = '';
+  previewContainerElement.classList.remove(...previewContainerElement.classList);
+  previewContainerElement.style.cssText = '';
   effectSettings = getEffectSettings(effectClassName);
-  sliderElem.noUiSlider.updateOptions(effectSettings.sliderOptions);
+  sliderElement.noUiSlider.updateOptions(effectSettings.sliderOptions);
   updateImgStyle();
 }
 
-sliderElem.noUiSlider.on('update', () => {
-  const sliderVal = sliderElem.noUiSlider.get();
+sliderElement.noUiSlider.on('update', () => {
+  const sliderVal = sliderElement.noUiSlider.get();
   if (effectSettings){
     effectSettings.filterIntensity = sliderVal;
     updateImgStyle();
-    effectLevelValue.setAttribute('value', effectSettings.filterIntensity);
+    effectValueElement.setAttribute('value', effectSettings.filterIntensity);
   }
 });
 
 function unblockSubmitButton()  {
-  submitButton.disabled = false;
+  submitButtonElement.disabled = false;
 }
 
 function onFail() {
-  errorSection.setAttribute('style', 'z-index: 2');
-  document.body.appendChild(errorSection);
+  errorSectionElement.setAttribute('style', 'z-index: 2');
+  document.body.appendChild(errorSectionElement);
 }
 function closeErrorFormHandler() {
-  document.body.removeChild(errorSection);
+  document.body.removeChild(errorSectionElement);
 }
 
 function onSuccess() {
-  successSection.setAttribute('style', 'z-index: 2');
-  document.body.appendChild(successSection);
+  successSectionElement.setAttribute('style', 'z-index: 2');
+  document.body.appendChild(successSectionElement);
 }
 
 function closeSuccessFormHandler() {
-  document.body.removeChild(successSection);
+  document.body.removeChild(successSectionElement);
   uploadCancelHandler();
 }
 
@@ -306,7 +306,7 @@ function submitFormHandler(evt) {
   const isValidHashTag = pristineTextHashTag.validate();
   const isValidTextDescription = pristineTextDescription.validate();
   if (isValidHashTag && isValidTextDescription) {
-    submitButton.disabled = true;
+    submitButtonElement.disabled = true;
     sendData(
       onSuccess,
       onFail,

@@ -3,22 +3,22 @@ import {getData} from './api.js';
 import {getRandomPositiveInteger, debounce} from './utils.js';
 import {RANDOM_PIC_AMOUNT, RENDER_DELAY} from './constants.js';
 
-const picContainer = document.querySelector('.pictures');
-const picTemplate = document.querySelector('#picture');
-const picItem = picTemplate.content.querySelector('a');
-const imgFilters = document.querySelector('.img-filters');
+const pictureContainerElement = document.querySelector('.pictures');
+const pictureTemplate = document.querySelector('#picture');
+const pictureElement = pictureTemplate.content.querySelector('a');
+const filtersContainerElement = document.querySelector('.img-filters');
 let imagesData = [];
 
 getData(getElems);
 
 function getElems(data) {
   imagesData = data;
-  imgFilters.classList.remove('img-filters--inactive');
-  imgFilters.addEventListener('click', debounce(imgFilterHandler, RENDER_DELAY));
+  filtersContainerElement.classList.remove('img-filters--inactive');
+  filtersContainerElement.addEventListener('click', debounce(imgFilterHandler, RENDER_DELAY));
   showFilteredElems(imagesData);
 }
 
-picContainer.addEventListener('click', (evt) => {
+pictureContainerElement.addEventListener('click', (evt) => {
   if (evt.target.parentElement.classList.contains('picture')) {
     fullsizeDisplay(evt.target.parentElement.dataElem);
   }
@@ -58,11 +58,11 @@ function imgFilterHandler(evt) {
 }
 
 function showFilteredElems(data) {
-  const picItems = picContainer.querySelectorAll('.picture');
+  const picItems = pictureContainerElement.querySelectorAll('.picture');
   const fragment = document.createDocumentFragment();
   picItems.forEach((elem) => elem.remove());
   data.forEach((elem) => {
-    const picElem = picItem.cloneNode(true);
+    const picElem = pictureElement.cloneNode(true);
     picElem.querySelector('.picture__img').src= elem.url;
     picElem.querySelector('.picture__comments').textContent = elem.comments.length;
     picElem.querySelector('.picture__likes').textContent = elem.likes;
@@ -70,5 +70,5 @@ function showFilteredElems(data) {
     picElem.dataElem = elem;
     fragment.appendChild(picElem);
   });
-  picContainer.appendChild(fragment);
+  pictureContainerElement.appendChild(fragment);
 }

@@ -1,7 +1,7 @@
 import {isEscapeKey, closePopupMessageForm} from './utils.js';
 import {sendData} from './api.js';
 import {ZOOM_STEP, FILE_TYPES, ZOOM_MAX, ZOOM_MIN} from './constants.js';
-import {pristineTextHashTag, pristineTextDescription} from './validating.js';
+import {pristine} from './validating.js';
 
 const containerElement = document.querySelector('.img-upload');
 const formElement = containerElement.querySelector('.img-upload__form');
@@ -19,10 +19,10 @@ const effectsListElement = overlayElement.querySelector('.effects__list');
 const effectValueElement = overlayElement.querySelector('.effect-level__value');
 const submitButtonElement = containerElement.querySelector('#upload-submit');
 const effectNoneElement = containerElement.querySelector('#effect-none');
-const errorTemplate = document.querySelector('#error');
-const errorSectionElement = errorTemplate.content.querySelector('section');
-const successTemplate = document.querySelector('#success');
-const successSectionElement = successTemplate.content.querySelector('section');
+const errorTemplateElement = document.querySelector('#error');
+const errorSectionElement = errorTemplateElement.content.querySelector('section');
+const successTemplateElement = document.querySelector('#success');
+const successSectionElement = successTemplateElement.content.querySelector('section');
 const effectPreviewElements = containerElement.querySelectorAll('.effects__preview');
 let effectSettings = getEffectSettings('--none');
 let scaleImg = 1;
@@ -35,7 +35,7 @@ fileInputElement.addEventListener('change', uploadFileHandler);
 function uploadNewFile() {
   const file = fileInputElement.files[0];
   const fileName = file.name.toLowerCase();
-  const matches = FILE_TYPES.some((elem) => fileName.endsWith(elem));
+  const matches = FILE_TYPES.some((fileType) => fileName.endsWith(fileType));
   const objURL = URL.createObjectURL(file);
   if (matches) {
     previewContainerElement.src = objURL;
@@ -303,9 +303,8 @@ function closeModalOuterHandler(evt) {
 
 function submitFormHandler(evt) {
   evt.preventDefault();
-  const isValidHashTag = pristineTextHashTag.validate();
-  const isValidTextDescription = pristineTextDescription.validate();
-  if (isValidHashTag && isValidTextDescription) {
+  const isValid = pristine.validate();
+  if (isValid) {
     submitButtonElement.disabled = true;
     sendData(
       onSuccess,

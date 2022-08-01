@@ -16,19 +16,19 @@ export function showAlert(message) {
   }, ALERT_SHOW_TIME);
 }
 
-function checkHashTag(elem, regexp) {
-  return regexp.test(elem) && elem.indexOf('#', 1) === -1;
+function checkHashTag(hashtag, regexp) {
+  return regexp.test(hashtag) && hashtag.indexOf('#', 1) === -1;
 }
 
 export function getHashTagMinLength(value) {
-  const arrHashTags = getHashTags(value);
-  const isMinLength = arrHashTags.every((elem) => elem.length >= MIN_HASHTAG_LENGTH);
+  const hashTags = getHashTags(value);
+  const isMinLength = hashTags.every((hashTag) => hashTag.length >= MIN_HASHTAG_LENGTH);
   return isMinLength;
 }
 
 export function getHashTagMaxLength(value) {
-  const arrHashTags = getHashTags(value);
-  const isMaxLength = arrHashTags.every((elem) => elem.length <= MAX_HASHTAG_LENGTH);
+  const hashTags = getHashTags(value);
+  const isMaxLength = hashTags.every((hashTag) => hashTag.length <= MAX_HASHTAG_LENGTH);
   return isMaxLength;
 }
 
@@ -42,25 +42,25 @@ export function validateDescription(value) {
 
 function getHashTags(value) {
   let hashTags = value.toUpperCase().split(' ');
-  hashTags = hashTags.filter((elem) => elem.length > 0 && elem !== ' ');
+  hashTags = hashTags.filter((hashtag) => hashtag.length > 0 && hashtag !== ' ');
   return hashTags;
 }
 
 export function validateHashTags(value) {
-  const arrHashTags = getHashTags(value);
-  const isMatchRegExp = arrHashTags.every((elem) => checkHashTag(elem, REGEXP));
+  const hashTags = getHashTags(value);
+  const isMatchRegExp = hashTags.every((hashTag) => checkHashTag(hashTag, REGEXP));
   return isMatchRegExp;
 }
 
 export function getRepeatHashTags(value) {
-  const arrHashTags = getHashTags(value);
-  const isGetRepeatHashTag = arrHashTags.some(checkRepeatHashTags);
+  const hashTags = getHashTags(value);
+  const isGetRepeatHashTag = hashTags.some(checkRepeatHashTags);
   return !isGetRepeatHashTag;
 }
 
 export function getHashTagAmount(value){
-  const arrHashTags = getHashTags(value);
-  return arrHashTags.length <= MAX_HASHTAGS_AMOUNT;
+  const hashTags = getHashTags(value);
+  return hashTags.length <= MAX_HASHTAGS_AMOUNT;
 }
 
 export function closePopupMessageForm(evt, outer, inner, btn, func) {

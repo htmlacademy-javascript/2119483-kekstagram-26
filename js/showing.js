@@ -4,8 +4,8 @@ import {getRandomPositiveInteger, debounce} from './utils.js';
 import {RANDOM_PIC_AMOUNT, RENDER_DELAY} from './constants.js';
 
 const pictureContainerElement = document.querySelector('.pictures');
-const pictureTemplate = document.querySelector('#picture');
-const pictureElement = pictureTemplate.content.querySelector('a');
+const pictureTemplateElement = document.querySelector('#picture');
+const pictureElement = pictureTemplateElement.content.querySelector('a');
 const filtersContainerElement = document.querySelector('.img-filters');
 let imagesData = [];
 
@@ -20,7 +20,7 @@ function getElems(data) {
 
 pictureContainerElement.addEventListener('click', (evt) => {
   if (evt.target.parentElement.classList.contains('picture')) {
-    fullsizeDisplay(evt.target.parentElement.dataElem);
+    fullsizeDisplay(evt.target.parentElement.postData);
   }
 });
 
@@ -60,15 +60,15 @@ function imgFilterHandler(evt) {
 function showFilteredElems(data) {
   const picItems = pictureContainerElement.querySelectorAll('.picture');
   const fragment = document.createDocumentFragment();
-  picItems.forEach((elem) => elem.remove());
-  data.forEach((elem) => {
-    const picElem = pictureElement.cloneNode(true);
-    picElem.querySelector('.picture__img').src= elem.url;
-    picElem.querySelector('.picture__comments').textContent = elem.comments.length;
-    picElem.querySelector('.picture__likes').textContent = elem.likes;
-    picElem.querySelector('.picture__img').alt = elem.description;
-    picElem.dataElem = elem;
-    fragment.appendChild(picElem);
+  picItems.forEach((picItem) => picItem.remove());
+  data.forEach((post) => {
+    const postItem = pictureElement.cloneNode(true);
+    postItem.querySelector('.picture__img').src= post.url;
+    postItem.querySelector('.picture__comments').textContent = post.comments.length;
+    postItem.querySelector('.picture__likes').textContent = post.likes;
+    postItem.querySelector('.picture__img').alt = post.description;
+    postItem.postData = post;
+    fragment.appendChild(postItem);
   });
   pictureContainerElement.appendChild(fragment);
 }

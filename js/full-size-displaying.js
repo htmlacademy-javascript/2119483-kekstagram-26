@@ -12,11 +12,11 @@ const moreButtonElement = bigPictureElement.querySelector('.comments-loader');
 const socialCommentCountElement = bigPictureElement.querySelector ('.social__comment-count');
 const socialCommentCountShownElement = socialCommentCountElement.querySelector('.comments-count__shown');
 const socialCommentsListElement = bigPictureElement.querySelector('.social__comments');
-const socialCommentTemplate = document.querySelector('#socialComment');
-const socialElement = socialCommentTemplate.content.querySelector('li');
+const socialCommentTemplateElement = document.querySelector('#socialComment');
+const socialElement = socialCommentTemplateElement.content.querySelector('li');
 
-function fullsizeDisplay(elem) {
-  const {url, description, likes, comments} = elem;
+function fullsizeDisplay(post) {
+  const {url, description, likes, comments} = post;
   const bigPictureImg = bigPictureElement.querySelector('.big-picture__img');
   const likesCount = bigPictureElement.querySelector('.likes-count');
   const commentsCount = bigPictureElement.querySelector('.comments-count');
@@ -36,13 +36,13 @@ function fullsizeDisplay(elem) {
 
 function createCommentsList(items, item, root) {
   for (let i = 0; i < items.length; i++) {
-    const commentElem = item.cloneNode(true);
-    const socialPic = commentElem.querySelector('.social__picture');
+    const comment = item.cloneNode(true);
+    const socialPic = comment.querySelector('.social__picture');
     socialPic.src = items[i].avatar;
     socialPic.alt = items[i].name;
-    const socialText = commentElem.querySelector('.social__text');
+    const socialText = comment.querySelector('.social__text');
     socialText.textContent = items[i].message;
-    root.appendChild(commentElem);
+    root.appendChild(comment);
   }
 }
 
